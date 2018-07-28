@@ -1,0 +1,31 @@
+# MDP CONFIGURATIONS LOCATION:
+mdp_conf_dir: /dip/conf
+
+
+########################################
+
+# CONSUL CONFIGURATIONS
+
+########################################
+
+ip: 8.8.8.8
+port: 8500
+
+########################################
+
+# APL (es-sql-engine)
+
+########################################
+
+apl:
+  # default: port: 8900
+  port: 8900
+  elasticsearch_configuration:
+    - ip: 127.0.0.1
+      port: 9300
+      restport: 9200
+    - ip: 127.0.0.1
+      port: 9300
+      restport: 9200
+  # interval is time in millisecond
+  datasource_refresh_interval: 300000

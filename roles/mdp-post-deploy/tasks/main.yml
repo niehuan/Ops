@@ -1,0 +1,6 @@
+---
+- name: Check java environments etc
+  import_tasks: check_env.yml
+
+- name: Prepare es-sql-engine configuration files
+  import_tasks: configure_es_sql_engine.yml

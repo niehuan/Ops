@@ -1,0 +1,26 @@
+ {
+  "PORT": 3333,
+  "LOG_PATH": "./logs/",
+  "MYSQL": {
+    "HOST": "10.255.8.78",
+    "USER": "root",
+    "PWD" : "Collect%2017",
+    "DB" : "node"
+  },
+  "CONSUL": {
+    "CONSUL_HOST": "10.255.8.78",
+    "CONSUL_NODE": "dev-1",
+    "CONSUL_PORT": 8500,
+    "CONSUL_SECURE": false,
+    "NAME": "node-report",
+    "HOST": "10.255.8.78",
+    "PORT": 3333,
+    "CLIENT": {
+      "META": "aone-meta",
+      "GALAXY": "aone-galaxy",
+      "APL": "es-sql-engine"
+    }
+  },
+  "OUTPUT_REPORT_ROOT": "/usr/share/nginx/html/report/"
+ }
+ 

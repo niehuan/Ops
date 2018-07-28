@@ -1,0 +1,7 @@
+- name: prepare configuration fields for MDP services
+  hosts: mdp
+  gather_facts: false
+  roles:
+    - mdp-post-deploy
+  vars_files:
+    - "../../group_vars/mdp_service_configs.yml"

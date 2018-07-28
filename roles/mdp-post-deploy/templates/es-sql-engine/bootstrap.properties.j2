@@ -1,0 +1,21 @@
+spring.jpa.hibernate.ddl-auto=update
+
+
+# Number of ms to wait before throwing an exception if no connection is available.
+# Maximum number of active connections that can be allocated from this pool at the same time.
+# Validate the connection before borrowing it from the pool.
+spring.datasource.tomcat.max-wait=10000
+spring.datasource.tomcat.max-active=5
+spring.datasource.tomcat.test-on-borrow=true
+
+#es.nodes=localhost
+#es.hadoop.pushdown=true
+#es.script.max_compilations_per_minute = 100
+
+cluster.name=test
+
+transport.tcp.connect_timeout=30
+transport.tcp.compress=true
+
+### time interval renewing dataSource and indicesMapping, in millisecond
+retrieve.datasource.interval= {{ apl['datasource_refresh_interval'] }}

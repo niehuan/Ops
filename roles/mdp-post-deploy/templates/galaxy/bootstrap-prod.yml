@@ -1,0 +1,141 @@
+server:
+  port: 9999
+
+spring:
+  application:
+      name: aone-galaxy
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    
+  datasource:
+    collect:
+      database: collect
+      driver-class-name: com.mysql.jdbc.Driver
+      max-active: 5
+      max-wait: 10000
+      password: Collect%2017
+      sqlScriptEncoding: UTF-8
+      test-on-borrow: true
+      url: jdbc:mysql://localhost:3306/collect?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+      username: root
+      validation-query: SELECT 1
+
+  # consul 配置
+  cloud:
+    consul:
+      # consul服务器地址
+      host: localhost
+      # consul服务端口
+      port: 8500
+      config:
+        # enabled为true表示启用配置管理功能
+        enabled: true
+        # watch选项为配置监视功能，主要监视配置的改变
+        watch:
+          enabled: true
+          delay: 10000
+          wait-time: 30
+        # 表示如果没有发现配置，是否抛出异常，true为是，false为否，当为false时，consul会打印warn级别的日志信息
+        fail-fast: false
+        # 表示使用的配置格式
+        format: key_value
+        # 配置所在的应用目录名称
+        name: ${spring.application.name}
+      # 服务发现配置
+      discovery:
+        # 启用服务发现
+        enabled: true
+        # 启用服务注册
+        register: true
+        # 表示注册时使用IP而不是hostname
+        prefer-ip-address: true
+        # 执行监控检查的频率
+        health-check-interval: 30s
+        # 设置健康检查失败多长时间后，取消注册
+        health-check-critical-timeout: 30m
+        # 健康检查的路径
+        health-check-path: /actuator/info
+        # 服务注册标识，格式为：应用名称+服务器IP+端口
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+management:
+  context-path: /actuator
+
+analyze:
+  es:
+    node:
+      - host: 10.255.8.71
+        port: 9300
+      - host: 10.255.8.72
+        port: 9300
+      - host: 10.255.8.73
+        port: 9300
+    job:
+      rate: 60000
+      indexType: log
+      cluster_index: .es_cluster
+      cluster_alias: es_cluster
+      node_index: .es_node
+      node_alias: es_node
+      source_index: .es_source
+      source_alias: es_source
+collect:
+  es:
+    connect: 10.255.8.71:9200,10.255.8.72:9200,10.255.8.73:9200
+    replica: 1
+    shard: 5
+kafka:
+  broker:
+  - host: 10.255.8.75
+    port: 6667
+  - host: 10.255.8.76
+    port: 6667
+  - host: 10.255.8.77
+    port: 6667
+
+
+collectd:
+  init:
+    flows:
+      - name: dip
+        collectType: http
+        extractors: []
+        inputs: {}
+        outputs: {}
+        isEmpty: true
+        status: valid
+        logType: text
+      - name: alert
+        collectType: http
+        extractors: []
+        inputs: {}
+        outputs: {}
+        isEmpty: true
+        status: valid
+        logType: text
+      - name: es_cluster
+        collectType: http
+        extractors: []
+        inputs: {}
+        outputs: {}
+        isEmpty: true
+        status: valid
+        logType: text
+      - name: es_node
+        collectType: http
+        extractors: []
+        inputs: {}
+        outputs: {}
+        isEmpty: true
+        status: valid
+        logType: text
+      - name: es_source
+        collectType: http
+        extractors: []
+        inputs: {}
+        outputs: {}
+        isEmpty: true
+        status: valid

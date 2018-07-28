@@ -1,0 +1,85 @@
+server:
+  port: 8889
+
+spring:
+  application:
+    name: aone-scheduler
+  jackson:
+    default-property-inclusion: non_null
+  # consul 配置
+  cloud:
+    consul:
+      # consul服务器地址
+      host: qa-1
+      # consul服务端口
+      port: 8500
+      enabled: true
+      config:
+        # enabled为true表示启用配置管理功能
+        enabled: true
+        # watch选项为配置监视功能，主要监视配置的改变
+        watch:
+          enabled: true
+          delay: 10000
+          wait-time: 30
+        # 表示如果没有发现配置，是否抛出异常，true为是，false为否，当为false时，consul会打印warn级别的日志信息
+        fail-fast: false
+        # 表示使用的配置格式
+        format: key_value
+        prefix: config
+        name: ${spring.application.name}
+      # 服务发现配置
+      discovery:
+        # 启用服务发现
+        enabled: true
+        # 启用服务注册
+        register: true
+        # 应用关闭时，取消注册
+        deregister: true
+        # 监听的端口
+        port: ${server.port}
+        # 表示注册时使用IP而不是hostname
+        prefer-ip-address: true
+        # 执行监控检查的频率
+        health-check-interval: 30s
+        # 健康检查的路径
+        health-check-path: /actuator/info
+        # 设置健康检查失败多长时间后，取消注册
+        health-check-critical-timeout: 30m
+        # 服务注册标识，格式为：应用名称+服务器IP+端口
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+  # 数据库配置
+  datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://qa-1:3306/scheduler?useUnicode=true&characterEncoding=UTF-8
+      username: root
+      password: Collect%2017
+
+# endpoint配置
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+management:
+  context-path: /actuator
+
+# mybatis 配置
+mybatis:
+  type-aliases-package: com.aoneai.job.core.model
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+# log4j2 日志路径
+logging:
+  config: classpath:log4j2.xml
+
+# XXL在consul中的key前缀
+xxl:
+  job:
+    prefix: ${spring.cloud.consul.config.prefix}/${spring.cloud.consul.config.name}/xxl.job.mail.
+    prefix_message: ${spring.cloud.consul.config.prefix}/${spring.cloud.consul.config.name}/xxl.job.message.

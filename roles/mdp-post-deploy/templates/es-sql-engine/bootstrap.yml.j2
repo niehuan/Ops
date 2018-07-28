@@ -1,0 +1,52 @@
+# Server configuration
+server:
+  port: {{ apl['port'] }}
+
+# Logging configuration
+logging:
+  level:
+    org.springframework:
+      data: INFO
+      security: INFO
+
+# JWT
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 604800
+  tokenHead: "Bearer "
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"
+
+spring:
+  application:
+    name: es-sql-engine
+  cloud:
+    consul:
+      host: {{ ip }}
+      port: {{ port }}
+      config:
+        enabled: true
+        watch:
+          enabled: true
+          delay: 10000
+          wait-time: 30
+        fail-fast: false
+        format: key_value
+        name: ${spring.application.name}
+      discovery:
+        enabled: true
+        register: true
+        prefer-ip-address: true
+        health-check-interval: 30s
+        health-check-path: /actuator/info
+        health-check-critical-timeout: 30m
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+management:
+  context-path: /actuator
+  security:
+    enabled: false

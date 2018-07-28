@@ -1,0 +1,21 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/es-sql-engine"
+    state: directory
+
+- name: Updating es-sql-engine configs
+  block:
+    - name: update elasticsearch configs
+      template:
+        src: "es-sql-engine/application-analyze.properties.j2"
+        dest: "{{ mdp_conf_dir }}/es-sql-engine/application-analyze.properties"
+    - name: update consul configs
+      template:
+        src: "es-sql-engine/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/es-sql-engine/bootstrap.yml"
+    - name: update apl retrive datarouce time interval
+      template:
+        src: "es-sql-engine/bootstrap.properties.j2"
+        dest: "{{ mdp_conf_dir }}/es-sql-engine/bootstrap.properties"
+
