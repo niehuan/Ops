@@ -1,0 +1,2 @@
+- debug:
+    msg: "run docker ci tasks"

@@ -1,0 +1,10 @@
+---
+- name: prepare docker compose configs
+  hosts: mdp
+  gather_facts: false
+  roles:
+    - ci-docker
+  vars_files:
+    - "../../group_vars/docker_ci.yml"
+
+- import_playbook: ../mdp/mdp.yaml
