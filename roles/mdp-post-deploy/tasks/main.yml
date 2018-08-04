@@ -4,3 +4,27 @@
 
 - name: Prepare es-sql-engine configuration files
   import_tasks: configure_es_sql_engine.yml
+
+- name: Prepare galaxy configuration files
+  import_tasks: configure_galaxy.yml
+
+- name: Prepare gateway configuration files
+  import_tasks: configure_gateway.yml
+
+- name: Prepare collect-agent configuration files
+  import_tasks: configure_collect_agent.yml
+
+- name: Prepare node-report configuration files
+  import_tasks: configure_node_report.yml
+
+- name: Prepare rbac configuration files
+  import_tasks: configure_rbac.yml
+
+- name: Prepare scheduler-admin configuration files
+  import_tasks: configure_scheduler_admin.yml
+
+- name: Prepare scheduler-executors configuration files
+  import_tasks: configure_scheduler_executors.yml
+
+- name: Prepare summer configuration files
+  import_tasks: configure_summer.yml

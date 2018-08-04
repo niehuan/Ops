@@ -1,0 +1,26 @@
+ {
+  "PORT": {{ consul['port_text'] }},
+  "LOG_PATH": "./logs/",
+  "MYSQL": {
+    "HOST": "{{ mysql['host'] }}",
+    "USER": "root",
+    "PWD" : "Collect%2017",
+    "DB" : "node"
+  },
+  "CONSUL": {
+    "CONSUL_HOST": "{{ consul['host'] }}",
+    "CONSUL_NODE": "{{ consul['node'] }}",
+    "CONSUL_PORT": {{ consul['port'] }},
+    "CONSUL_SECURE": false,
+    "NAME": "node-report",
+    "HOST": "{{ consul['host'] }}",
+    "PORT": {{ consul['port_text'] }},
+    "CLIENT": {
+      "META": "aone-mate",
+      "GALAXY": "aone-galaxy",
+      "APL": "es-sql-engine"
+    }
+  },
+  "OUTPUT_REPORT_ROOT": "/usr/share/nginx/html/report/"
+ }
+ 

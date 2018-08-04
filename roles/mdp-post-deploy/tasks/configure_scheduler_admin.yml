@@ -1,0 +1,21 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/scheduler-admin"
+    state: directory
+
+- name: Updating scheduler-admin configs
+  block:
+    - name: update scheduler-admin configs
+      template:
+        src: "scheduler-admin/bootstrap-prod.yml.j2"
+        dest: "{{ mdp_conf_dir }}/scheduler-admin/bootstrap-{{ spring_active }}.yml"
+    - name: update scheduler-admin configs
+      template:
+        src: "scheduler-admin/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/scheduler-admin/bootstrap.yml"
+    - name: update log4j2 configs
+      template:
+        src: "scheduler-admin/log4j2.xml"
+        dest: "{{ mdp_conf_dir }}/scheduler-admin/log4j2.xml"
+

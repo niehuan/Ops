@@ -1,0 +1,21 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/summer"
+    state: directory
+
+- name: Updating summer configs
+  block:
+    - name: update summer configs
+      template:
+        src: "summer/bootstrap-prod.yml.j2"
+        dest: "{{ mdp_conf_dir }}/summer/bootstrap-{{ spring_active }}.yml"
+    - name: update summer configs
+      template:
+        src: "summer/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/summer/bootstrap.yml"
+    - name: update log4j2 configs
+      template:
+        src: "summer/log4j2.xml"
+        dest: "{{ mdp_conf_dir }}/summer/log4j2.xml"
+

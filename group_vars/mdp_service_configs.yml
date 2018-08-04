@@ -7,9 +7,22 @@ mdp_conf_dir: /dip/conf
 # CONSUL CONFIGURATIONS
 
 ########################################
+# consul config
+consul:
+  host: 9.8.8.8
+  port: 8500
+  port_text: 3333
+  node: dev-1
 
-ip: 8.8.8.8
-port: 8500
+########################################
+
+spring_active: demo
+
+########################################
+
+collect_agent:
+  path: ../data
+  port: 5619
 
 ########################################
 
@@ -29,3 +42,59 @@ apl:
       restport: 9200
   # interval is time in millisecond
   datasource_refresh_interval: 300000
+
+#############galaxy##################
+# galaxy config
+galaxy:
+  # default: port: 9999
+  port: 9999
+  es_config:
+    - host: 127.0.0.1
+      port: 9300
+    - host: 127.0.0.2
+      port: 9300
+    - host: 127.0.0.3
+      port: 9300
+  kafka_config:
+    - host: 127.0.0.1
+      port: 6667
+    - host: 127.0.0.2
+      port: 6667
+    - host: 127.0.0.3
+      port: 6667
+######################################
+# gateway port & ip 
+gateway:
+  port: 9995
+  cluster_nodes: 127.0.0.1 
+
+######################################
+# node-report config 
+mysql:
+  host: 127.0.0.1
+
+######################################
+# rbac port
+rbac:
+  port: 8867
+
+######################################
+# scheduler_admin port
+scheduler_admin:
+  port: 8889
+
+######################################
+# scheduler_executors port
+scheduler_executors:
+  port: 7010
+  es_nodes:
+    - host: 127.0.0.1
+      port: 9300
+    - host: 127.0.0.2
+      port: 9300
+
+
+######################################
+# summer port
+summer:
+  port: 8081

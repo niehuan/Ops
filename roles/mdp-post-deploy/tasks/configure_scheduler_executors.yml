@@ -1,0 +1,21 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/scheduler-executors"
+    state: directory
+
+- name: Updating scheduler-executors configs
+  block:
+    - name: update scheduler-executors configs
+      template:
+        src: "scheduler-executors/bootstrap-prod.yml.j2"
+        dest: "{{ mdp_conf_dir }}/scheduler-executors/bootstrap-{{ spring_active }}.yml"
+    - name: update scheduler-executors configs
+      template:
+        src: "scheduler-executors/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/scheduler-executors/bootstrap.yml"
+    - name: update log4j2 configs
+      template:
+        src: "scheduler-executors/log4j2.xml"
+        dest: "{{ mdp_conf_dir }}/scheduler-executors/log4j2.xml"
+

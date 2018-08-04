@@ -1,0 +1,21 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/collect-agent"
+    state: directory
+
+- name: Updating collect-agent configs
+  block:
+    - name: update collect-agent configs
+      template:
+        src: "collect-agent/bootstrap-prod.yml.j2"
+        dest: "{{ mdp_conf_dir }}/collect-agent/bootstrap-{{ spring_active }}.yml"
+    - name: update collect-agent configs
+      template:
+        src: "collect-agent/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/collect-agent/bootstrap.yml"
+    - name: update log4j2 configs
+      template:
+        src: "collect-agent/log4j2.xml"
+        dest: "{{ mdp_conf_dir }}/collect-agent/log4j2.xml"
+

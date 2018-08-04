@@ -26,9 +26,9 @@ spring:
     name: es-sql-engine
   cloud:
     consul:
-      host: {{ ip }}
-      port: {{ port }}
-      config:
+      host: {{ consul['host'] }}
+      port: {{ consul['port'] }}
+      configconsul:
         enabled: true
         watch:
           enabled: true
