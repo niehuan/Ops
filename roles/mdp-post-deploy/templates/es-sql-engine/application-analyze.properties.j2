@@ -1,10 +1,8 @@
 # elasticsearch connection properties
-{% set i=0 %}
 {% for esconf in apl['elasticsearch_configuration'] %}
-analyze.es.node[{{ i }}].host={{ esconf['ip'] }}
-analyze.es.node[{{ i }}].port={{ esconf['port'] }}
-analyze.es.node[{{ i }}].rest={{ esconf['restport'] }}
-{% set i = i+1 %}
+analyze.es.node[{{ loop.index0 }}].host={{ esconf['ip'] }}
+analyze.es.node[{{ loop.index0 }}].port={{ esconf['port'] }}
+analyze.es.node[{{ loop.index0 }}].rest={{ esconf['restport'] }}
 {% endfor %}
 
 analyze.spark.master=local

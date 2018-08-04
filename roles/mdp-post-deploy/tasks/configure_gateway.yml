@@ -1,0 +1,17 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/gateway"
+    state: directory
+
+- name: Updating gateway configs
+  block:
+    - name: update main configs
+      template:
+        src: "gateway/bootstrap-prod.yml.j2"
+        dest: "{{ mdp_conf_dir }}/gateway/bootstrap-{{ spring_active }}.yml"
+    - name: update tag configs
+      template:
+        src: "gateway/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/gateway/bootstrap.yml"
+

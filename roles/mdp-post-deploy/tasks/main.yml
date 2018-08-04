@@ -4,3 +4,9 @@
 
 - name: Prepare es-sql-engine configuration files
   import_tasks: configure_es_sql_engine.yml
+
+- name: Prepare galaxy configuration files
+  import_tasks: configure_galaxy.yml
+
+- name: Prepare gateway configuration files
+  import_tasks: configure_gateway.yml

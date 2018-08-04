@@ -1,0 +1,17 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/galaxy"
+    state: directory
+
+- name: Updating galaxy configs
+  block:
+    - name: update main configs
+      template:
+        src: "galaxy/bootstrap-prod.yml.j2"
+        dest: "{{ mdp_conf_dir }}/galaxy/bootstrap-{{ spring_active }}.yml"
+    - name: update tag configs
+      template:
+        src: "galaxy/bootstrap.yml.j2"
+        dest: "{{ mdp_conf_dir }}/galaxy/bootstrap.yml"
+

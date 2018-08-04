@@ -5,12 +5,12 @@
       - "'2.6' in ansible_version.full"
     msg: "ansible version must be 2.6"
 
-- block:
-  - name: Check java version
-    shell: java -version
-    register: javaVersion
+# block:
+# - name: Check java version
+#   shell: java -version
+#   register: javaVersion
 
-  - assert:
-      that:
-        - "'openjdk' not in javaVersion.stdout"
+# - assert:
+#     that:
+#       - "'openjdk' not in javaVersion.stdout"
         #- "'1.8.0' in javaVersion.stdout"

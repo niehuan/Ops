@@ -1,5 +1,5 @@
 server:
-  port: 9999
+  port: {{ galaxy['port'] }}
 
 spring:
   application:
@@ -28,7 +28,7 @@ spring:
   cloud:
     consul:
       # consul服务器地址
-      host: localhost
+      host: {{ ip  }}
       # consul服务端口
       port: 8500
       config:
@@ -67,12 +67,10 @@ management:
 analyze:
   es:
     node:
-      - host: 10.255.8.71
-        port: 9300
-      - host: 10.255.8.72
-        port: 9300
-      - host: 10.255.8.73
-        port: 9300
+{% for esconf in galaxy['es_config'] %}
+      - host: {{ esconf['host'] }}
+        port: {{ esconf['port'] }}
+{% endfor %}
     job:
       rate: 60000
       indexType: log
@@ -84,18 +82,17 @@ analyze:
       source_alias: es_source
 collect:
   es:
-    connect: 10.255.8.71:9200,10.255.8.72:9200,10.255.8.73:9200
+    connect: {% for esconf in galaxy['es_config'] %}{{ esconf['host'] }}:9200{% if not loop.last %},{% endif %}{% if loop.last %}
+
+{% endif %}{% endfor %}
     replica: 1
     shard: 5
 kafka:
   broker:
-  - host: 10.255.8.75
-    port: 6667
-  - host: 10.255.8.76
-    port: 6667
-  - host: 10.255.8.77
-    port: 6667
-
+{% for esconf in galaxy['kafka_config'] %}
+  - host: {{ esconf['host'] }}
+    port: {{ esconf['port'] }}
+{% endfor %}
 
 collectd:
   init:
