@@ -87,12 +87,6 @@ scheduler_admin:
 # scheduler_executors port
 scheduler_executors:
   port: 7010
-  es_nodes:
-    - host: 127.0.0.1
-      port: 9300
-    - host: 127.0.0.2
-      port: 9300
-
 
 ######################################
 # summer port

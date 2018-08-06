@@ -77,7 +77,7 @@ logging:
 es:
   node:
     node:
-{% for esconf in scheduler_executors['es_nodes'] %}
+{% for esconf in galaxy['es_config'] %}
       - host: {{ esconf['host'] }}
         port: {{ esconf['port'] }}
 {% endfor %}
