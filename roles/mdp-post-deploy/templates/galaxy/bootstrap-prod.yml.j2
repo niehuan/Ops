@@ -20,7 +20,7 @@ spring:
       password: Collect%2017
       sqlScriptEncoding: UTF-8
       test-on-borrow: true
-      url: jdbc:mysql://localhost:3306/collect?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+      url: jdbc:mysql://{{ mysql['host'] }}:3306/collect?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
       username: root
       validation-query: SELECT 1
 

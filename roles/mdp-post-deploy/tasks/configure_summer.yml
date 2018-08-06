@@ -14,8 +14,7 @@
       template:
         src: "summer/bootstrap.yml.j2"
         dest: "{{ mdp_conf_dir }}/summer/bootstrap.yml"
-    - name: update log4j2 configs
+    - name: copy log4j2 configs
       template:
         src: "summer/log4j2.xml"
         dest: "{{ mdp_conf_dir }}/summer/log4j2.xml"
-

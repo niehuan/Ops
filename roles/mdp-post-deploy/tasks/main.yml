@@ -14,17 +14,17 @@
 - name: Prepare collect-agent configuration files
   import_tasks: configure_collect_agent.yml
 
-- name: Prepare node-report configuration files
-  import_tasks: configure_node_report.yml
+- name: Prepare nodereport configuration files
+  import_tasks: configure_nodereport.yml
 
 - name: Prepare rbac configuration files
   import_tasks: configure_rbac.yml
 
-- name: Prepare scheduler-admin configuration files
-  import_tasks: configure_scheduler_admin.yml
+- name: Prepare scheduler configuration files
+  import_tasks: configure_scheduler.yml
 
-- name: Prepare scheduler-executors configuration files
-  import_tasks: configure_scheduler_executors.yml
+- name: Prepare executors configuration files
+  import_tasks: configure_executors.yml
 
 - name: Prepare summer configuration files
   import_tasks: configure_summer.yml

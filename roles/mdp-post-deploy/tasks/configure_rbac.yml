@@ -14,8 +14,7 @@
       template:
         src: "rbac/bootstrap.yml.j2"
         dest: "{{ mdp_conf_dir }}/rbac/bootstrap.yml"
-    - name: update log4j2 configs
+    - name: copy log4j2 configs
       template:
         src: "rbac/log4j2.xml"
         dest: "{{ mdp_conf_dir }}/rbac/log4j2.xml"
-

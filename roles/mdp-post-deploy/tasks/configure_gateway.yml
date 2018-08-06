@@ -14,8 +14,7 @@
       template:
         src: "gateway/bootstrap.yml.j2"
         dest: "{{ mdp_conf_dir }}/gateway/bootstrap.yml"
-    - name: update log4j2 configs
+    - name: copy log4j2 configs
       template:
         src: "gateway/log4j2.xml"
         dest: "{{ mdp_conf_dir }}/gateway/log4j2.xml"
-
