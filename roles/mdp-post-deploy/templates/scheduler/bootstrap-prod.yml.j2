@@ -12,7 +12,7 @@ spring:
       # consul服务器地址
       host: {{ consul['host'] }}
       # consul服务端口
-      port: 8500
+      port: {{ consul['port'] }}
       enabled: true
       config:
         # enabled为true表示启用配置管理功能

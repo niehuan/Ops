@@ -8,15 +8,15 @@ ansible version 2.6.1
 
 Usage:
 
+修改 hosts 文件，添加配置主机IP
 ```
-echo "
+vim hosts
+
 [mdp]
 127.0.0.1
-...
-" > hosts
 
 ```
-Change mdp conf variables
+修改 mdp 容器内各服务组件的配置文件，修改可变参数 variables
 ```
 vim group_vars/mdp_service_configs.yml
 

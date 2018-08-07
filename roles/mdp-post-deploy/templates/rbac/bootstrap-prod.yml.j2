@@ -22,7 +22,7 @@ spring:
       # consul服务器地址
       host: {{ mysql['host'] }}
       # consul服务端口
-      port: 8500
+      port: {{ consul['port'] }}
       config:
         # enabled为true表示启用配置管理功能
         enabled: true
