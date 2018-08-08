@@ -1,5 +1,5 @@
 server:
-  port: {{ rbac['port'] }}
+  port: {{ rbac_port }}
   servlet:
     context-path: /rbac
 
@@ -7,11 +7,11 @@ spring:
   application:
     name: aone-rbac
   datasource:
-    url: jdbc:mysql://{{ mysql['host'] }}:3306/rbac?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://{{ mysql_host }}:{{ mysql_port }}/rbac?useUnicode=true&characterEncoding=utf8
     driver-class-name: com.mysql.jdbc.Driver
-    username: root
-    password: Collect%2017
-    sqlScriptEncoding: UTF-8
+    username: {{ mysql_user }}
+    password: {{ mysql_pass }}
+    sqlScriptEncoding: {{ mysql_enconding }}
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,9 +20,9 @@ spring:
   cloud:
     consul:
       # consul服务器地址
-      host: {{ mysql['host'] }}
+      host: {{ consul_host }}
       # consul服务端口
-      port: {{ consul['port'] }}
+      port: {{ consul_port }}
       config:
         # enabled为true表示启用配置管理功能
         enabled: true

@@ -1,5 +1,5 @@
 server:
-  port: {{ galaxy['port'] }}
+  port: {{ galaxy_port }}
 
 spring:
   application:
@@ -17,20 +17,20 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       max-active: 5
       max-wait: 10000
-      password: Collect%2017
-      sqlScriptEncoding: UTF-8
+      password: {{ mysql_pass }}
+      sqlScriptEncoding: {{ mysql_enconding }}
       test-on-borrow: true
-      url: jdbc:mysql://{{ mysql['host'] }}:3306/collect?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
-      username: root
+      url: jdbc:mysql://{{ mysql_host }}:{{ mysql_port }}/collect?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+      username: {{ mysql_user }}
       validation-query: SELECT 1
 
   # consul 配置
   cloud:
     consul:
       # consul服务器地址
-      host: {{ consul['host'] }}
+      host: {{ consul_host }}
       # consul服务端口
-      port: {{ consul['port'] }}
+      port: {{ consul_port }}
       config:
         # enabled为true表示启用配置管理功能
         enabled: true
@@ -67,9 +67,9 @@ management:
 analyze:
   es:
     node:
-{% for esconf in galaxy['es_config'] %}
-      - host: {{ esconf['host'] }}
-        port: {{ esconf['port'] }}
+{% for esconf in apl_elasticsearch_configuration_ip %}
+      - host: {{ esconf }}
+        port: {{ es_port }}
 {% endfor %}
     job:
       rate: 60000
@@ -82,16 +82,16 @@ analyze:
       source_alias: es_source
 collect:
   es:
-    connect: {% for esconf in galaxy['es_config'] %}{{ esconf['host'] }}:9200{% if not loop.last %},{% endif %}{% if loop.last %}
+    connect: {% for esconf in apl_elasticsearch_configuration_ip %}{{ esconf }}:{{ es_restport }}{% if not loop.last %},{% endif %}{% if loop.last %}
 
 {% endif %}{% endfor %}
-    replica: 1
-    shard: 5
+    replica: {{ es_replica }}
+    shard: {{ es_shard }}
 kafka:
   broker:
-{% for esconf in galaxy['kafka_config'] %}
-  - host: {{ esconf['host'] }}
-    port: {{ esconf['port'] }}
+{% for esconf in apl_elasticsearch_configuration_ip %}
+  - host: {{ esconf }}
+    port: {{ kafka_port }}
 {% endfor %}
 
 collectd:

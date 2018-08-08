@@ -1,29 +1,15 @@
 # MDP CONFIGURATIONS LOCATION:
+
 mdp_conf_dir: /path/conf
-
-
-########################################
-
-# CONSUL CONFIGURATIONS
 
 ########################################
 # CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
-consul:
-  host: 9.8.8.8
-  port: 8500
-  nodereport_port: 3333
-  node: dn1
+consul_host: 9.8.8.8
+consul_nodename: dn1
 
 ########################################
 
 spring_active: demo
-
-########################################
-# COLLECT-AGENT data path: ../data, and default port: 5619
-
-collect_agent:
-  path: ../data
-  port: 5619
 
 ########################################
 
@@ -31,62 +17,53 @@ collect_agent:
 
 ########################################
 
-apl:
   # default: port: 8900
-  port: 8900
-  elasticsearch_configuration:
-    - ip: 127.0.0.1
-      port: 9300
-      restport: 9200
-    - ip: ...
-      port: 9300
-      restport: 9200
+apl_elasticsearch_configuration_ip: 
+  - 127.0.0.1
+  - 127.0.0.1
+
+#  - esconf:
+#    - ip
+#      port: 9300
+#      restport: 9200
+#    - ip: ...
+#      port: 9300
+#      restport: 9200
   # interval is time in millisecond
-  datasource_refresh_interval: 300000
 
 #############galaxy##################
 # galaxy default port: 9999, ES cluster nodes
-galaxy:
-  # default: port: 9999
-  port: 9999
-  es_config:
-    - host: 127.0.0.1
-      port: 9300
-    - host: ...
-      port: ...
-  kafka_config:
-    - host: 127.0.0.1
-      port: 6667
-    - host: ...
-      port: ...
+#  # default: port: 9999
+#  es_config:
+#    - host: 127.0.0.1
+#      port: 9300
+#    - host: ...
+#      port: ...
+#  kafka_config:
+#    - host: 127.0.0.1
+#      port: 6667
+#    - host: ...
+#      port: ...
 ######################################
 # gateway default port: 9995, and ES cluster node ip 
-gateway:
-  port: 9995
-  cluster_nodes: 127.0.0.1 
+gateway_host: 127.0.0.1 
 
 ######################################
 # node-report config 
-mysql:
-  host: 127.0.0.1
+mysql_host: 127.0.0.1
 
 ######################################
 # rbac default port: 8867
-rbac:
-  port: 8867
+rbac_host: 127.0.0.1
 
 ######################################
 # scheduler default port: 8889
-scheduler:
-  port: 8889
+scheduler_host: 127.0.0.1
 
 ######################################
 # executors default port: 7010
-executors:
-  host: 127.0.0.1
-  port: 7010
+executors_host: 127.0.0.1
 
 ######################################
 # summer default port: 8081
-summer:
-  port: 8081
+summer_host: 127.0.0.1

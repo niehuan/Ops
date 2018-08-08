@@ -1,5 +1,5 @@
 server:
-  port: {{ gateway['port'] }}
+  port: {{ gateway_port }}
   compression:
     enabled: true
     min-response-size: 1024
@@ -8,7 +8,8 @@ spring:
   application:
     name: aone-gateway
   data.elasticsearch:
-    cluster-nodes: "{{ gateway['cluster_nodes'] }}:9300"
+    cluster-nodes: "{% for esconf in apl_elasticsearch_configuration_ip %}{{ esconf }}:{{ es_port }}{% if not loop.last %},{% endif %}{% if loop.last %}"
+{% endif %}{% endfor %}
     properties:
       "client.transport.ignore_cluster_name": true
       "client.transport.nodes_sampler_interval": "5s"
@@ -17,9 +18,9 @@ spring:
   cloud:
     consul:
       # consul服务器地址
-      host: {{ consul['host']  }}
+      host: {{ consul_host  }}
       # consul服务端口
-      port: {{ consul['port'] }}
+      port: {{ consul_port }}
       config:
         # enabled为true表示启用配置管理功能
         enabled: true

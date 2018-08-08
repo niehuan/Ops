@@ -1,5 +1,5 @@
 server:
-  port: {{ executors['port'] }}
+  port: {{ executors_port }}
 
 spring:
   application:
@@ -8,7 +8,7 @@ spring:
     default-property-inclusion: non_null
   data:
     elasticsearch:
-      cluster-nodes: "{% for esconf in galaxy['es_config'] %}{{ esconf['host'] }}:9300{% if not loop.last %},{% endif %}{% if loop.last %}"
+      cluster-nodes: "{% for esconf in apl_elasticsearch_configuration_ip %}{{ esconf }}:{{ es_port }}{% if not loop.last %},{% endif %}{% if loop.last %}"
 {% endif %}{% endfor %}
       properties:
         "client.transport.ignore_cluster_name": true
@@ -19,9 +19,9 @@ spring:
   cloud:
     consul:
       # consul服务器地址
-      host: {{ consul['host'] }}
+      host: {{ consul_host }}
       # consul服务端口
-      port: {{ consul['port'] }}
+      port: {{ consul_port }}
       enabled: true
       config:
         # enabled为true表示启用配置管理功能
@@ -77,19 +77,19 @@ logging:
 es:
   node:
     node:
-{% for esconf in galaxy['es_config'] %}
-      - host: {{ esconf['host'] }}
-        port: {{ esconf['port'] }}
+{% for esconf in apl_elasticsearch_configuration_ip %}
+      - host: {{ esconf }}
+        port: {{ es_port }}
 {% endfor %}
 
 xxl:
   job:
-    admin.addresses: http://{{ consul['host'] }}:{{ scheduler['port'] }}
+    admin.addresses: http://{{ consul_host }}:{{ scheduler_port }}
     accessToken:
     executor:
       appname: prada
-      host: {{ executors['host'] }}
-      port: 6007
+      host: {{ executors_host }}
+      port: {{ jetty_port }}
       logpath: ../logs/reportEx
 
 report:

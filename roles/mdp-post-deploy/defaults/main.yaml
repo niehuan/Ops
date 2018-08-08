@@ -1,1 +1,55 @@
+# default tmp path directory
 automata_tmp_dir: /tmp/mdp
+
+# consul default port: 8500
+consul_port: 8500
+
+# collect_agent default config, and default port: 5619
+collect_agent_path: ../data
+collect_agent_port: 5619
+
+# APL default config, and default port: 8900, 
+apl_port: 8900
+apl_datasource_refresh_interval: 300000
+
+# es-sql-engine default port: 9200, reback port 9300
+es_port: 9300
+es_restport: 9200
+es_replica: 1
+es_shard: 5
+
+# galaxy default port: 9999
+galaxy_port: 9999
+
+# gateway default port: 9995
+gateway_port: 9995
+
+# kafka default port: 6667
+kafka_port: 6667
+
+# mysql default config, and default port: 3306
+mysql_port: 3306
+mysql_user: root
+mysql_pass: Collect%2017
+mysql_enconding: UTF-8
+
+# nodereport default port: 3333
+nodereport_port: 3333
+nodereport_log_path: ./logs/
+nodereport_sqldb: node
+
+# rbac default port: 8867
+rbac_port: 8867
+
+# scheduler default port: 8889
+scheduler_port: 8889
+
+# executors default port: 7010
+executors_port: 7010
+
+# jetty default port: 6007
+jetty_port: 6007
+
+# summer default port: 8081
+summer_port: 8081
+

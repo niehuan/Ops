@@ -1,6 +1,6 @@
 # Server configuration
 server:
-  port: {{ summer['port'] }}
+  port: {{ summer_port }}
   servlet:
     context-path: /meta
 # DB configuration
@@ -12,11 +12,11 @@ spring:
         ddl-auto: update
       database-platform: org.hibernate.dialect.MySQL57Dialect
   datasource:
-    url: jdbc:mysql://{{ mysql['host'] }}:3306/summer?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://{{ mysql_host }}:{{ mysql_port }}/summer?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
-    username: root
-    password: Collect%2017
-    sqlScriptEncoding: UTF-8
+    username: {{ mysql_user }}
+    password: {{ mysql_pass }}
+    sqlScriptEncoding: {{ mysql_enconding }}
     tomcat:
       max-wait: 10000
       max-active: 5
@@ -25,9 +25,9 @@ spring:
   cloud:
     consul:
       # consul服务器地址
-      host: {{ consul['host'] }}
+      host: {{ consul_host }}
       # consul服务端口
-      port: {{ consul['port'] }}
+      port: {{ consul_port }}
       config:
         # enabled为true表示启用配置管理功能
         enabled: true
@@ -98,9 +98,9 @@ log_del:
 summer:
   es:
     node:
-{% for esconf in galaxy['es_config'] %}
-      - host: {{ esconf['host'] }}
-        port: {{ esconf['port'] }}
+{% for esconf in apl_elasticsearch_configuration_ip %}
+      - host: {{ esconf }}
+        port: {{ es_port }}
 {% endfor %}
 
 #FTP 服务器配置

@@ -1,6 +1,6 @@
 # Server configuration
 server:
-  port: {{ apl['port'] }}
+  port: {{ apl_port }}
 
 # Logging configuration
 logging:
@@ -26,8 +26,8 @@ spring:
     name: es-sql-engine
   cloud:
     consul:
-      host: {{ consul['host'] }}
-      port: {{ consul['port'] }}
+      host: {{ consul_host }}
+      port: {{ consul_port }}
       configconsul:
         enabled: true
         watch:

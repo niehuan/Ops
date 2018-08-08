@@ -1,5 +1,5 @@
 server:
-  port: {{ scheduler['port'] }}
+  port: {{ scheduler_port }}
 
 spring:
   application:
@@ -10,9 +10,9 @@ spring:
   cloud:
     consul:
       # consul服务器地址
-      host: {{ consul['host'] }}
+      host: {{ consul_host }}
       # consul服务端口
-      port: {{ consul['port'] }}
+      port: {{ consul_port }}
       enabled: true
       config:
         # enabled为true表示启用配置管理功能
@@ -52,9 +52,9 @@ spring:
   # 数据库配置
   datasource:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://{{ mysql['host'] }}:3306/scheduler?useUnicode=true&characterEncoding=UTF-8
-      username: root
-      password: Collect%2017
+      url: jdbc:mysql://{{ mysql_host }}:{{ mysql_port }}/scheduler?useUnicode=true&characterEncoding=UTF-8
+      username: {{ mysql_user }}
+      password: {{ mysql_pass }}
 
 # endpoint配置
 management:
