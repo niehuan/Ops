@@ -1,3 +1,0 @@
---
-- name: Display variables
-  debug: apl.port
