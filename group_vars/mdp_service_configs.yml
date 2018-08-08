@@ -1,5 +1,5 @@
+########################################
 # MDP CONFIGURATIONS LOCATION:
-
 mdp_conf_dir: /path/conf
 
 ########################################
@@ -16,34 +16,11 @@ spring_active: demo
 # APL (es-sql-engine)
 
 ########################################
-
-  # default: port: 8900
+# es cluster nodes host
 apl_elasticsearch_configuration_ip: 
   - 127.0.0.1
   - 127.0.0.1
 
-#  - esconf:
-#    - ip
-#      port: 9300
-#      restport: 9200
-#    - ip: ...
-#      port: 9300
-#      restport: 9200
-  # interval is time in millisecond
-
-#############galaxy##################
-# galaxy default port: 9999, ES cluster nodes
-#  # default: port: 9999
-#  es_config:
-#    - host: 127.0.0.1
-#      port: 9300
-#    - host: ...
-#      port: ...
-#  kafka_config:
-#    - host: 127.0.0.1
-#      port: 6667
-#    - host: ...
-#      port: ...
 ######################################
 # gateway default port: 9995, and ES cluster node ip 
 gateway_host: 127.0.0.1 
