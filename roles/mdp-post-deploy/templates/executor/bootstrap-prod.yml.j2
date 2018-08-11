@@ -67,7 +67,6 @@ management:
     web:
       exposure:
         include: '*'
-management:
   context-path: /actuator
 
 # log4j2 日志路径
@@ -84,7 +83,7 @@ es:
 
 xxl:
   job:
-    admin.addresses: http://{{ consul_host }}:{{ scheduler_port }}
+    admin.addresses: http://{{ executors_host }}:{{ scheduler_port }}
     accessToken:
     executor:
       appname: prada

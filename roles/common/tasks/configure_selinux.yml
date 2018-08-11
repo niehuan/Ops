@@ -1,0 +1,7 @@
+---
+- name: shutdown selinux 
+  block:
+    - name:
+      template:
+        src: selinux_cnf.j2
+        dest: /etc/selinux/config

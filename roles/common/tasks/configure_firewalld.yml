@@ -1,0 +1,5 @@
+---
+- name: shutdown firewalld
+  shell: systemctl stop firewalld
+  shell: systemctl disable firewalld
+  tags: system_ensure

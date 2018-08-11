@@ -1,0 +1,10 @@
+---
+- name: shutdown selinux
+  import_tasks: configure_selinux.yml
+
+- name: shutdown firewalld
+  import_tasks: 
+
+- name: Create DNS File
+  template: src=resolve.conf.j2  dest=/etc/resolve.conf
+  tags: system_ensure

@@ -4,4 +4,4 @@
   roles:
     - mdp-post-deploy
   vars_files:
-    - "../../group_vars/mdp_service_configs.yml"
+    - "../../group_vars/mdp/mdp_service_configs.yml"

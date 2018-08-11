@@ -1,46 +1,33 @@
-########################################
 # MDP CONFIGURATIONS LOCATION:
 mdp_conf_dir: /path/conf
 
-########################################
 # CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
 consul_host: 9.8.8.8
 consul_nodename: dn1
 
-########################################
-
+# invermentor tag
 spring_active: demo
 
-########################################
-
 # APL (es-sql-engine)
-
-########################################
 # es cluster nodes host
 apl_elasticsearch_configuration_ip: 
   - 127.0.0.1
   - 127.0.0.1
 
-######################################
 # gateway default port: 9995, and ES cluster node ip 
 gateway_host: 127.0.0.1 
 
-######################################
 # node-report config 
 mysql_host: 127.0.0.1
 
-######################################
 # rbac default port: 8867
 rbac_host: 127.0.0.1
 
-######################################
 # scheduler default port: 8889
 scheduler_host: 127.0.0.1
 
-######################################
 # executors default port: 7010
 executors_host: 127.0.0.1
 
-######################################
 # summer default port: 8081
 summer_host: 127.0.0.1
