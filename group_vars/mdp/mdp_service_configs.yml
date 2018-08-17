@@ -5,7 +5,7 @@ mdp_conf_dir: /path/conf
 consul_host: 9.8.8.8
 consul_nodename: dn1
 
-# invermentor tag
+# inventory tag
 spring_active: demo
 
 # APL (es-sql-engine)

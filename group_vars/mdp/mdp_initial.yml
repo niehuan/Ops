@@ -1,0 +1,10 @@
+---
+# default host password
+hostpw: demo
+
+# cluster host ip pool
+ip_pool:
+  - 127.0.0.1
+  - 127.0.0.1
+
+Hostname: dn1

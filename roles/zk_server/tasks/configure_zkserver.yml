@@ -1,0 +1,9 @@
+---
+- name: install and config zookeeper
+  block:
+    - name: copy and unzip zookeeper tar file
+      unarchive: src={{ zkserver_file }} dest={{ mdp_path }}
+    - name: install configuration file for zookeeper
+      template: 
+        src: zoo.cfg.j2
+        dest: {{ mdp_path }}

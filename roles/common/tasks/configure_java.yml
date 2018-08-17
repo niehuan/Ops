@@ -1,0 +1,13 @@
+---
+- name: install oracle jdk-1.8.0_161
+  block:
+    - name: install gcc 
+      yum: 
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - gcc
+        - 
+    - name: install jdk
+      shell: |
+        rpm -ih {{ mdp_path }}/repolist/repo/{{ jdk_rpm_file }}

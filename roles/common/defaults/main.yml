@@ -2,4 +2,11 @@
 # Selinux status
 se_status: disabled
 
-# 
+# default install path 
+mdp_path: /data
+
+# default repo file
+repolist_file: repolist.tgz
+
+# default jdk
+jdk_rpm_file: jdk-8u161-linux-x64.rpm

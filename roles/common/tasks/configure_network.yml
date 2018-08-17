@@ -1,0 +1,8 @@
+---
+- name: server network
+  block:
+    - name: change os network device name
+      shell: sh script/initial/init_network.sh
+    - name: change DNS server
+      shell: echo "114.114.114.114" >> /etc/resolv.conf
+

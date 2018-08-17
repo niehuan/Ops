@@ -1,5 +1,11 @@
 ---
 - name: shutdown firewalld
-  shell: systemctl stop firewalld
-  shell: systemctl disable firewalld
-  tags: system_ensure
+  block:
+    - name: shutdown firewalld
+      shell: |
+        systemctl stop firewalld
+        systemctl disable firewalld
+    - name: shutdown selinux
+      template:
+        src: selinux_cnf.j2
+        dest: /etc/selinux/config

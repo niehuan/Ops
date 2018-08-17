@@ -1,0 +1,4 @@
+# default zookeeper server file
+zkserver_file: zk.tgz
+zkconf_file: zk_conf.tgz
+
