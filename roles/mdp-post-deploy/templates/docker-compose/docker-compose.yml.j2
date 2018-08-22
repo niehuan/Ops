@@ -1,0 +1,91 @@
+version: '3'
+services:
+  consul:
+    command: agent -server -bootstrap-expect=1 -ui
+    container_name: consul-1.2.2
+    environment: {CONSUL_LOCAL_CONFIG: '{ "datacenter": "aone", "data_dir": "/consul/data",
+        "log_level": "INFO", "server": true, "bind_addr":"{{ consul_host }}", "addresses":
+        { "https": "{{ consul_host }}", "http": "{{ consul_host }}" }, "ports": { "http": 8500,
+        "dns":8600, "server":8300, "serf_lan":8301, "serf_wan":8302 }, "leave_on_terminate":true
+        }'}
+    image: harbor.dev.aone.ai/aone/consul:1.2.2
+    network_mode: host
+    restart: always
+    volumes: ['/etc/localtime:/etc/localtime:ro']
+  es-sql-engine:
+    container_name: es-sql-engine-1.6.2
+    image: harbor.dev.aone.ai/aone/es-sql-engine:1.6.2-qa
+    ports: ['8900:8900']
+    restart: always
+    volumes: ['/data/conf/es-sql-engine/bootstrap.yml:/bootstrap.yml', '/data/conf/es-sql-engine/application-analyze.properties:/application-analyze.properties',
+      '/etc/localtime:/etc/localtime:ro']
+  executors:
+    container_name: executors-1.6.2
+    image: harbor.dev.aone.ai/aone/executors:1.6.2-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/nginx/html:/usr/share/nginx/html', '/data/conf/executor/bootstrap.yml:/bootstrap.yml',
+      '/data/conf/executor/log4j2.xml:/log4j2.xml', '/data/conf/executor/bootstrap-sw.yml:/bootstrap-sw.yml',
+      '/etc/localtime:/etc/localtime:ro', '/data/logs:/logs']
+  fe-mdp:
+    container_name: fe-mdp-1.6.2
+    image: harbor.dev.aone.ai/aone/fe-mdp:1.6.2.6-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/nginx/html/report:/usr/share/nginx/report', '/data/conf/nginx/conf.d/dip.conf:/etc/nginx/conf.d/dip.conf',
+      '/etc/localtime:/etc/localtime:ro']
+
+  galaxy:
+    container_name: galaxy-1.6.2
+    image: harbor.dev.aone.ai/aone/galaxy:1.6.2-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/galaxy/bootstrap.yml:/bootstrap.yml', '/data/conf/galaxy/log4j2.xml:/log4j2.xml',
+      '/data/conf/galaxy/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '/data/logs:/logs']
+  gateway:
+    container_name: gateway-1.6.2
+    image: harbor.dev.aone.ai/aone/gateway:1.6.2-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/gateway/bootstrap.yml:/bootstrap.yml', '/data/conf/gateway/log4j2.xml:/log4j2.xml',
+      '/data/conf/gateway/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '/data/logs:/logs']
+  mysql:
+    container_name: mysql-5.7
+    environment: {MYSQL_ROOT_PASSWORD: Collect%2017}
+    image: harbor.dev.aone.ai/aone/mysql:5.7
+    network_mode: host
+    restart: always
+    volumes: ['/data/mysql:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '/data/my.cnf:/etc/mysql/my.cnf']
+  nodereport:
+    container_name: nodereport-1.6.2
+    image: harbor.dev.aone.ai/aone/nodereport:1.6.2-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/nginx/html:/usr/share/nginx/html', '/data/conf/nodereport/nodeport.json:/var/www/app/current/nodeport.json',
+      '/etc/localtime:/etc/localtime:ro']
+  rbac:
+    container_name: rbac-1.6.2
+    image: harbor.dev.aone.ai/aone/rbac:1.6.2-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/rbac/bootstrap.yml:/bootstrap.yml', '/data/conf/rbac/log4j2.xml:/log4j2.xml',
+      '/data/conf/rbac/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '/data/logs:/logs']
+  scheduler:
+    container_name: scheduler-1.6.2
+    image: harbor.dev.aone.ai/aone/scheduler:1.6.2-qa
+    ports: ['8889:8889']
+    restart: always
+    volumes: ['/data/conf/scheduler/bootstrap.yml:/bootstrap.yml', '/data/conf/scheduler/log4j2.xml:/log4j2.xml',
+      '/data/conf/scheduler/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '/data/logs:/logs']
+  summer:
+    container_name: summer-1.6.2
+    image: harbor.dev.aone.ai/aone/summer:1.6.2-qa
+    network_mode: host
+    restart: always
+    volumes: ['/data/conf/summer/bootstrap.yml:/bootstrap.yml', '/data/conf/summer/log4j2.xml:/log4j2.xml',
+      '/data/conf/summer/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '/data/logs:/logs']

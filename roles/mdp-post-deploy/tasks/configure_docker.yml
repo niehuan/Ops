@@ -1,0 +1,12 @@
+---
+- name: Create mdp config directory
+  file:
+    path: "{{ mdp_conf_dir }}/docker-compose"
+    state: directory
+
+- name: Updating docker-compose configs
+  block:
+    - name: update docker-compose configs
+      template:
+        src: "docker-compose/docker-compose.yml.j2"
+        dest: "/root/docker-compose.yml"
