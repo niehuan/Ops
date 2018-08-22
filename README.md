@@ -12,7 +12,7 @@
     ssh-copy-id -i ~/.ssh/id_rsa.pub root@localhost
   
     ```
-  2.用这个项目把ansible.cfg的配置更新到/etc/ansible/ansible.cfg里
+2.用这个项目把ansible.cfg的配置更新到/etc/ansible/ansible.cfg里
   
   Usage:
   
@@ -31,22 +31,22 @@
   修改 MDP 配置文件存放路径，默认路径: /data/conf
   ```
   # MDP CONFIGURATIONS LOCATION:
-  mdp_conf_dir: /path/conf
+  mdp_conf_dir: /data/conf
   
   ```
   修改 consul IP  和  主机名
   ```
   ########################################
   # CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
-  consul_host: 9.8.8.8
+  consul_host: 127.0.0.1
   consul_nodename: dn1
   
   ```
   修改客户ID
   ```
   ########################################
-  
-  spring_active: demo
+  # default inventory tag: sw
+  spring_active: sw
   
   ```
   修改 ES 集群的主机IP
@@ -58,7 +58,6 @@
   ########################################
   # es cluster nodes host
   apl_elasticsearch_configuration_ip: 
-    - 127.0.0.1
     - 127.0.0.1
   
   ```
