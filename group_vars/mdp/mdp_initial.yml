@@ -1,6 +1,6 @@
 ---
 # default host password
-hostpw: demo
+hostpw: liuxg123
 
 # cluster host ip pool
 ip_pool:

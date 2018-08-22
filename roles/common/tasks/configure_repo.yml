@@ -5,6 +5,7 @@
       unarchive: src={{ repolist_file }} dest={{ mdp_path }}
     - name: create repolist
       shell: |
+        cd {{ mdp_path }}/repolist/repo
         rpm -ih --force deltarpm-3.6-3.el7.x86_64.rpm
         rpm -ih --force python-deltarpm-3.6-3.el7.x86_64.rpm
         rpm -ih --force libxml2-python-2.9.1-6.el7_2.3.x86_64.rpm

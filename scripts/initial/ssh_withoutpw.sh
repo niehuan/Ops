@@ -7,7 +7,7 @@ fi
 SSHPASS=$2
 export SSHPASS
 
-if [ grep -v $1 /etc/hosts >> /dev/null ]; then 
+if [ grep $1 /etc/hosts >> /dev/null ]; then 
 echo -e "$1\tdn1" >> /etc/hosts
 fi
 
@@ -15,3 +15,5 @@ if [ ! -f /root/.ssh/id_rsa ]; then
 ssh-keygen -t rsa -P '' -f /root/.ssh/id_rsa 
 fi
 sshpass -e ssh-copy-id root@$1
+
+echo "Hello world" >> test.txt

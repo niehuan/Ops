@@ -1,8 +1,14 @@
+# MDP CONFIGURATIONS LOCATION:
+mdp_conf_dir: /data/conf
+
 # default tmp path directory
 automata_tmp_dir: /tmp/mdp
 
 # consul default port: 8500
 consul_port: 8500
+
+# inventory tag
+spring_active: sw
 
 # collect_agent default config, and default port: 5619
 collect_agent_path: ../data
@@ -54,3 +60,4 @@ jetty_port: 6007
 # summer default port: 8081
 summer_port: 8081
 
+# nginx default port: 9995

@@ -8,11 +8,3 @@
 - name: Setup without password login cluster
   import_tasks: configure_ssh.yml
 
-- name: create repolist
-  import_tasks: configure_repo.yml
-
-- name: Change hostname
-  import_tasks: configure_hostname.yml
-
-- name: Install oracle-jdk-1.8.0_161
-  import_tasks: configure_java.yml

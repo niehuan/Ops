@@ -1,4 +1,4 @@
-# CTask: 一个基于Ansible的运维任务管理工具
+# Automata: 一个基于Ansible的运维任务管理工具
 
 ## 0. 阅读
 

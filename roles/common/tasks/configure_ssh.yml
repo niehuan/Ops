@@ -6,7 +6,6 @@
     - name: config ssh without password
       block:
         - name: setup ssh without password cluster host
-          shell: |
-            bash ../../../scripts/initial/ssh_withoutpw.sh "{{ item }}" {{ hostpw }}
-          with_items: {{ ip_pool }}
+          script: ../../../scripts/initial/ssh_withoutpw.sh "{{ item }}" {{ hostpw }}
+          with_items: "{{ ip_pool }}"
 

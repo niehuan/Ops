@@ -28,3 +28,9 @@
 
 - name: Prepare summer configuration files
   import_tasks: configure_summer.yml
+
+- name: Prepare nginx configuration files
+  import_tasks: configure_nginx.yml
+
+- name: Prepare docker compose configuration files
+  import_tasks: configure_docker.yml
