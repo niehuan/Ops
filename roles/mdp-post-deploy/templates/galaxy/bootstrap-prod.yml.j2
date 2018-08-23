@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-      name: aone-galaxy
+    name: aone-galaxy
 
   jpa:
     show-sql: true
@@ -90,8 +90,8 @@ collect:
 kafka:
   broker:
 {% for esconf in apl_elasticsearch_configuration_ip %}
-  - host: {{ esconf }}
-    port: {{ kafka_port }}
+    - host: {{ esconf }}
+      port: {{ kafka_port }}
 {% endfor %}
 
 collectd:

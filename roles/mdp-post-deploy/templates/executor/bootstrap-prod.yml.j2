@@ -75,10 +75,9 @@ logging:
 
 es:
   node:
-    node:
 {% for esconf in apl_elasticsearch_configuration_ip %}
-      - host: {{ esconf }}
-        port: {{ es_port }}
+    - host: {{ esconf }}
+      port: {{ es_port }}
 {% endfor %}
 
 xxl:
