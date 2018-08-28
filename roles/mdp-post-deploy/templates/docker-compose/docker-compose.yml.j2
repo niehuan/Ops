@@ -32,7 +32,7 @@ services:
     image: harbor.dev.aone.ai/aone/fe-mdp:1.6.2.6-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/nginx/html/report:/usr/share/nginx/report', '/data/conf/nginx/conf.d/dip.conf:/etc/nginx/conf.d/dip.conf',
+    volumes: ['/data/conf/nginx/html/report:/usr/share/nginx/html/report', '/data/conf/nginx/conf.d/dip.conf:/etc/nginx/conf.d/dip.conf',
       '/etc/localtime:/etc/localtime:ro']
 
   galaxy:
