@@ -3,9 +3,10 @@ master_node
 data_node
 client_node
 kafka_node
+yum_repo_server
 
 [data_node]
-127.0.0.1
+10.255.8.214
 10.255.8.56
 10.255.8.93
 
@@ -16,3 +17,6 @@ kafka_node
 10.255.8.56
 
 [kafka_node]
+
+[yum_repo_server]
+10.255.8.214

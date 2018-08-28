@@ -1,0 +1,110 @@
+---
+- name: init yum server
+  when: enable_yum == true
+  block:
+    - name: check if yum repo exists
+      register: yum_repo_exists
+      stat:
+        path: "{{ yum_repo_dir }}"
+    - name: instal dependencies
+      block:
+        - name: install deltarpm
+          when: yum_repo_exists.stat.exists
+          yum: name={{ yum_repo_dir }}/{{ deltarpm_rpm_name }}
+          become: true
+        - name: install python-deltarpm
+          when: yum_repo_exists.stat.exists
+          yum: name={{ yum_repo_dir }}/{{ python_deltarpm_rpm_name }}
+          become: true
+        - name: install libxml2-python
+          when: yum_repo_exists.stat.exists
+          yum: name={{ yum_repo_dir }}/{{ libxml2_rpm_name }}
+          become: true
+        - name: install createrepo
+          when: yum_repo_exists.stat.exists
+          yum: name={{ yum_repo_dir }}/{{ createrepo_rpm_name }}
+          become: true
+        - name: install nginx
+          yum: name={{ yum_repo_dir }}/{{ nginx_rpm_name }}
+          when: yum_repo_exists.stat.exists
+          become: true
+
+    - name: setup nginx
+      block:
+        - name: prepare nginx config file
+          file:
+            path: /etc/nginx/conf.d/repo.conf
+            state: touch
+          when: yum_repo_exists.stat.exists
+          delegate_to: "{{ groups['yum_repo_server'][0] }}"
+          become: true          
+        - name: configure nginx
+          when: yum_repo_exists.stat.exists
+          delegate_to: "{{ groups['yum_repo_server'][0] }}"
+          become: true
+          blockinfile:
+            path: /etc/nginx/conf.d/repo.conf
+            block: |
+              server {
+                      listen {{ yum_repo_port }} default_server;
+                      listen [::]:{{ yum_repo_port }} default_server;
+                      server_name    {{ groups['yum_repo_server'][0] }};
+                      root    {{ yum_repo_dir }};
+                      autoindex    on;
+                      charset    utf-8;
+                      autoindex_localtime    on;
+                      autoindex_exact_size    off;
+              }
+        - name: start nginx service
+          when: yum_repo_exists.stat.exists
+          become: true
+          delegate_to: "{{ groups['yum_repo_server'][0] }}"
+          service:
+            name: nginx
+            state: restarted
+    - name: init yum repo
+      when: yum_repo_exists.stat.exists
+      delegate_to: "{{ groups['yum_repo_server'][0] }}"
+      shell: createrepo --workers 20 {{ yum_repo_dir }}
+      become: true
+
+- name: clean repo configuration
+  file:
+    state: absent
+    path: /etc/yum.repos.d
+  become: true
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['mdp'] }}"
+  when: enable_yum == true
+
+- name: create repo dir
+  file:
+    state: directory
+    path: /etc/yum.repos.d/
+  become: true
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['mdp'] }}"
+  when: enable_yum == true
+
+- name: create mdp repo file
+  yum_repository:
+    name: MDP
+    description: MDP Repository
+    file: mdp
+    baseurl: http://{{ groups['yum_repo_server'][0] }}/
+    gpgcheck: no
+    enabled: yes
+    priority: 1
+  become: true
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['mdp'] }}"
+  when: enable_yum == true
+
+- name: update yum cache
+  shell: |
+    yum clean all
+    yum makecache
+  become: true
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['mdp'] }}"
+  when: enable_yum == true

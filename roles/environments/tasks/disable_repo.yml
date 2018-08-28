@@ -1,0 +1,6 @@
+- name: shutdown local nginx
+  service:
+    name: nginx
+    state: stopped
+  delegate_to: "{{ groups['yum_repo_server'][0] }}"
+  when: yum_always_up

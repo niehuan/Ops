@@ -1,12 +1,35 @@
 ---
-- name: load yum repository
-  import_tasks: yum_repo.yml
+- name: prepare yum, pip repositories
+  import_tasks: enable_repo.yml
   tags:
     - mdp-all
-    - mdp-env
+    - mdp-load-env
+    - mdp-repo
 
 - name: init system configs
   import_tasks: sys_configs.yml
   tags:
     - mdp-all
-    - mdp-load-system
+    - mdp-load-env
+    - sys-config
+
+- name: setup ntp
+  import_tasks: setup_ntp.yml
+  tags:
+    - mdp-all
+    - mdp-load-env
+    - mdp-config
+
+- name: init java env
+  import_tasks: java_env.yml
+  tags:
+    - mdp-all
+    - mdp-load-env
+
+- name: disable repo
+  import_tasks: disable_repo.yml
+  when: yum_always_up
+  tags:
+    - mdp-all
+    - mdp-load-env
+    - mdp-repo

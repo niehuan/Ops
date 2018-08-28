@@ -10,6 +10,27 @@
         state: disabled
   become: true
 
+- name: disable ipv6
+  block:
+    - sysctl:
+        name: net.ipv6.conf.all.disable_ipv6
+        value: 1
+        state: absent
+        sysctl_file: /etc/sysctl.conf
+        reload: yes
+    - sysctl:
+        name: net.ipv6.conf.default.disable_ipv6
+        value: 1
+        state: absent
+        sysctl_file: /etc/sysctl.conf
+        reload: yes
+    - sysctl:
+        name: net.ipv6.conf.eth0.disable_ipv6
+        value: 1
+        state: absent
+        sysctl_file: /etc/sysctl.conf
+        reload: yes
+
 - name: configure bashrc
   block:
     - name: set bashrc
@@ -49,6 +70,8 @@
             src: hostname_mapping.py
             dest: /tmp/automata/hostname_mapping.py
             mode: u+x
+        # - name: install script dependencies , yaml
+          # TODO
 
     - name: get hostnames
       shell: python /tmp/automata/hostname_mapping.py --master_node {{ groups['master_node'] | to_json | regex_replace(' ', '') }} --data_node {{ groups['data_node'] | to_json | regex_replace(' ', '') }} --client_node {{ groups['client_node'] | to_json | regex_replace(' ', '') }} --kafka_node {{ groups['kafka_node'] | to_json | regex_replace(' ', '') }}
@@ -89,10 +112,3 @@
     path: /etc/resolv.conf
     block: nameserver 114.114.114.114
   become: true
-
-- name: set timezone
-  timezone:
-    name: Asia/Shanghai
-  become: true
-
-#TODO: IF NTP IS CONFIGURED
