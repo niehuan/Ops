@@ -2,6 +2,7 @@
   hosts: mdp
   gather_facts: false
   roles:
+    - environments
     - mdp-post-deploy
   vars_files:
     - "../../group_vars/mdp/mdp_service_configs.yml"

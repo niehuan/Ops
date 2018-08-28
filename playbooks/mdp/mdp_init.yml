@@ -1,8 +1,0 @@
----
-- name: 
-  hosts: mdp
-  gather_facts: false
-  roles:
-    - common
-  vars_files: 
-    - "../../group_vars/mdp/mdp_initial.yml"

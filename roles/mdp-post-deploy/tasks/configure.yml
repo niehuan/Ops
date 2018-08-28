@@ -1,0 +1,225 @@
+---
+- name: Prepare config directory
+  file:
+    path: "{{ mdp_conf_dir }}"
+    state: directory
+
+- name: Configure docker compose
+  block:
+    - name: Updating docker-compose configs
+      block:
+        - name: update docker-compose configs
+          template:
+            src: "docker-compose/docker-compose.yml.j2"
+            dest: "{{ mdp_conf_dir }}/docker-compose.yml"
+
+- name: Configure collect-agent
+  block:
+    - name: Create collect agent configuration dir
+      file:
+        path: "{{ mdp_conf_dir }}/collect-agent"
+        state: directory
+
+    - name: Updating collect-agent configs
+      block:
+        - name: update collect-agent configs
+          template:
+            src: "collect-agent/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/collect-agent/bootstrap-{{ spring_active }}.yml"
+        - name: update collect-agent configs
+          template:
+            src: "collect-agent/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/collect-agent/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "collect-agent/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/collect-agent/log4j2.xml"
+
+- name: Configure executor
+  block:
+    - name: Create executor configuration dir
+      file:
+        path: "{{ mdp_conf_dir }}/executor"
+        state: directory
+
+    - name: Updating executor configs
+      block:
+        - name: update executor configs
+          template:
+            src: "executor/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/executor/bootstrap-{{ spring_active }}.yml"
+        - name: update executor configs
+          template:
+            src: "executor/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/executor/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "executor/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/executor/log4j2.xml"
+
+- name: Configure galaxy
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/galaxy"
+        state: directory
+
+    - name: Updating galaxy configs
+      block:
+        - name: update galaxy configs
+          template:
+            src: "galaxy/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/galaxy/bootstrap-{{ spring_active }}.yml"
+        - name: update galaxy configs
+          template:
+            src: "galaxy/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/galaxy/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "galaxy/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/galaxy/log4j2.xml"
+
+- name: Configure gateway
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/gateway"
+        state: directory
+
+    - name: Updating gateway configs
+      block:
+        - name: update gateway configs
+          template:
+            src: "gateway/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/gateway/bootstrap-{{ spring_active }}.yml"
+        - name: update gateway configs
+          template:
+            src: "gateway/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/gateway/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "gateway/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/gateway/log4j2.xml"
+
+- name: Configure es-sql-engine
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/es-sql-engine"
+        state: directory
+
+    - name: Updating es-sql-engine configs
+      block:
+        - name: update elasticsearch configs
+          template:
+            src: "es-sql-engine/application-analyze.properties.j2"
+            dest: "{{ mdp_conf_dir }}/es-sql-engine/application-analyze.properties"
+        - name: update consul configs
+          template:
+            src: "es-sql-engine/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/es-sql-engine/bootstrap.yml"
+        - name: update apl retrive datarouce time interval
+          template:
+            src: "es-sql-engine/bootstrap.properties.j2"
+            dest: "{{ mdp_conf_dir }}/es-sql-engine/bootstrap.properties"
+
+- name: Configure nginx
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/nginx"
+        state: directory
+
+    - name: Updating nginx configs
+      block:
+        - name: create nginx report directory
+          file: path={{ item }} state=directory
+          with_items:
+            - "{{ mdp_conf_dir }}/nginx/conf.d"
+            - "{{ mdp_conf_dir }}/nginx/conf.d"
+            - "{{ mdp_conf_dir }}/../logs"
+        - name: update nginx conf configs
+          template:
+            src: "nginx/conf.d/dip.conf.j2"
+            dest: "{{ mdp_conf_dir }}/nginx/conf.d/dip.conf"
+
+
+- name: Configure nodereport
+  block:
+    - name: Create nodereport configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/nodereport"
+        state: directory
+
+    - name: Updating node-report configs
+      block:
+        - name: update node-report configs
+          template:
+            src: "nodereport/nodeport.json.j2"
+            dest: "{{ mdp_conf_dir }}/nodereport/nodeport.json"
+
+- name: Configure rbac
+  block:
+    - name: Create rbac configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/rbac"
+        state: directory
+
+    - name: Updating rbac configs
+      block:
+        - name: update rbac configs
+          template:
+            src: "rbac/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/rbac/bootstrap-{{ spring_active }}.yml"
+        - name: update rbac configs
+          template:
+            src: "rbac/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/rbac/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "rbac/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/rbac/log4j2.xml"
+
+- name: Configure scheduler
+  block:
+    - name: Create scheduler configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/scheduler"
+        state: directory
+
+    - name: Updating scheduler-admin configs
+      block:
+        - name: update scheduler-admin configs
+          template:
+            src: "scheduler/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/scheduler/bootstrap-{{ spring_active }}.yml"
+        - name: update scheduler-admin configs
+          template:
+            src: "scheduler/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/scheduler/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "scheduler/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/scheduler/log4j2.xml"
+
+- name: Configure summer
+  block:
+    - name: Create summer configuration directory
+      file:
+        path: "{{ mdp_conf_dir }}/summer"
+        state: directory
+
+    - name: Updating summer configs
+      block:
+        - name: update summer configs
+          template:
+            src: "summer/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_conf_dir }}/summer/bootstrap-{{ spring_active }}.yml"
+        - name: update summer configs
+          template:
+            src: "summer/bootstrap.yml.j2"
+            dest: "{{ mdp_conf_dir }}/summer/bootstrap.yml"
+        - name: copy log4j2 configs
+          template:
+            src: "summer/log4j2.xml"
+            dest: "{{ mdp_conf_dir }}/summer/log4j2.xml"

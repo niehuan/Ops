@@ -1,0 +1,98 @@
+---
+- name: shutdown firewalld
+  block:
+    - name: disable firewalld
+      service:
+        name: firewalld
+        state: stopped
+    - name: shutdown selinux
+      selinux:
+        state: disabled
+  become: true
+
+- name: configure bashrc
+  block:
+    - name: set bashrc
+      # notice: bashrc functions are appended to current user's bashrc file
+      blockinfile:
+        path: ~/.bashrc
+        block: |
+          export PS1="[\[\033[0;32m\]\u\[\033[0;32m\]@\[\033[0;34m\]$(hostname | awk -F- '{print $1}')-\[\033[0;31m\]$(hostname | awk -F- '{print $2}')\[\033[0;34m\].$(hostname -d | awk -F. '{print $1}')\[\033[0;34m\].\[\033[0;31m\]$(hostname -d | awk -F. '{print $2}')\[\033[0;34m\]$(hostname -d | awk -F. '{print "."$3"."$4}')\[\033[0;34m\] \W \[\033[0m\]]\$ "
+          export HISTTIMEFORMAT="%F %T "
+
+          alias rm='rm -i'
+          alias cp='cp -i'
+          alias mv='mv -i'
+
+          if [ -f /etc/bashrc ]; then
+                  . /etc/bashrc
+          fi
+
+          mdp(){
+              docker exec -it $1 bash -c "stty cols $COLUMNS rows $LINES && bash";
+          }
+          export -f mdp
+    - name: enable bashrc
+      shell: source ~/.bashrc
+
+- name: set hostname
+  block:
+    - name: prepare script
+      block:
+        - name: prepare tmp dir
+          file:
+            path: /tmp/automata
+            state: directory
+            mode: 0755
+        - name: copy script
+          copy:
+            src: hostname_mapping.py
+            dest: /tmp/automata/hostname_mapping.py
+            mode: u+x
+
+    - name: get hostnames
+      shell: python /tmp/automata/hostname_mapping.py --master_node {{ groups['master_node'] | to_json | regex_replace(' ', '') }} --data_node {{ groups['data_node'] | to_json | regex_replace(' ', '') }} --client_node {{ groups['client_node'] | to_json | regex_replace(' ', '') }} --kafka_node {{ groups['kafka_node'] | to_json | regex_replace(' ', '') }}
+      register: hostnames
+
+    - name: handling errors when error in output
+      fail:
+        msg: "{{ hostnames.stdout }}"
+      when: "'ERROR' in hostnames.stdout"
+
+    - name: set hostnames
+      block:
+        - name: set general hostnames
+          blockinfile:
+            path: /etc/hosts
+            block: "{{ item.value }}"
+          become: true
+          when: item.key == "all"
+          with_dict: "{{ hostnames.stdout | from_yaml }}"
+
+        - name: set localhost hostname mapping
+          when: item.key != "all"
+          with_dict: "{{ hostnames.stdout | from_yaml }}"
+          delegate_to: "{{ item.key }}"
+          lineinfile:
+            path: /etc/hosts
+            regexp: '^127.0.0.1*'
+            line: "127.0.0.1  localhost  {{ item.value }}"
+          become: true
+
+    - name: remove script
+      file:
+        path: "/tmp/automata/hostname_mapping.py"
+        state: absent
+
+- name: add dns server
+  blockinfile:
+    path: /etc/resolv.conf
+    block: nameserver 114.114.114.114
+  become: true
+
+- name: set timezone
+  timezone:
+    name: Asia/Shanghai
+  become: true
+
+#TODO: IF NTP IS CONFIGURED

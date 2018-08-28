@@ -1,0 +1,12 @@
+---
+- name: load yum repository
+  import_tasks: yum_repo.yml
+  tags:
+    - mdp-all
+    - mdp-env
+
+- name: init system configs
+  import_tasks: sys_configs.yml
+  tags:
+    - mdp-all
+    - mdp-load-system

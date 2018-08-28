@@ -1,36 +1,11 @@
 ---
 - name: Check java environments etc
   import_tasks: check_env.yml
+    - mdp-all
 
-- name: Prepare es-sql-engine configuration files
-  import_tasks: configure_es_sql_engine.yml
 
-- name: Prepare galaxy configuration files
-  import_tasks: configure_galaxy.yml
-
-- name: Prepare gateway configuration files
-  import_tasks: configure_gateway.yml
-
-- name: Prepare collect-agent configuration files
-  import_tasks: configure_collect_agent.yml
-
-- name: Prepare nodereport configuration files
-  import_tasks: configure_nodereport.yml
-
-- name: Prepare rbac configuration files
-  import_tasks: configure_rbac.yml
-
-- name: Prepare scheduler configuration files
-  import_tasks: configure_scheduler.yml
-
-- name: Prepare executors configuration files
-  import_tasks: configure_executors.yml
-
-- name: Prepare summer configuration files
-  import_tasks: configure_summer.yml
-
-- name: Prepare nginx configuration files
-  import_tasks: configure_nginx.yml
-
-- name: Prepare docker compose configuration files
-  import_tasks: configure_docker.yml
+- name: Prepare configuration files
+  import_tasks: configure.yml
+  tags:
+    - mdp-all
+    - mdp-config
