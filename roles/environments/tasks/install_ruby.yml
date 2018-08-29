@@ -1,0 +1,63 @@
+- name: install dependencies
+  block:
+    - name: install gcc
+      yum:
+        name: gcc
+        state: latest
+    - name: install jemalloc
+      yum:
+        name: "jemalloc*"
+        state: present
+    - name: install jemalloc-devel
+      yum:
+        name: "jemalloc-devel*"
+        state: present
+    - name: install ruby
+      yum:
+        name: "ruby-2.5.1"
+        state: present
+
+- name: setup gem server
+  block:
+    - name: check if gem dir exists
+      register: gem_dir_exists
+      stat:
+        path: "{{ ruby_gems_dir }}"
+    - name: setup nginx
+      block:
+        - name: create nginx config file for gem
+          when: gem_dir_exists.stat.exists
+          delegate_to: "{{ groups['gem_server'].0 }}"
+          file:
+            path: /etc/nginx/conf.d/gem.conf
+            state: touch
+        - name: configure nginx for gem
+          when: gem_dir_exists.stat.exists
+          delegate_to: "{{ groups['gem_server'].0 }}"
+          blockinfile:
+            path: /etc/nginx/conf.d/gem.conf
+            block: |
+              server {
+                    listen {{ ruby_server_port }};
+                    server_name     {{ groups['gem_server'].0 }};
+                    root    {{ ruby_gems_dir }}/;
+                    autoindex    on;
+              }
+        - name: reload nginx
+          when: gem_dir_exists.stat.exists
+          delegate_to: "{{ groups['gem_server'].0 }}"
+          service:
+            name: nginx
+            state: restarted
+
+- name: install gems
+  block:
+    - file:
+        path: "{{ ruby_gems_dir_remote }}"
+        state: directory
+    - name: install gem packages
+      with_items: "{{ ruby_gems_list }}"
+      shell: |
+        curl -o {{ ruby_gems_dir_remote }}/{{ item }} http://{{ groups['gem_server'].0 }}:{{ ruby_server_port }}/{{ item }}
+        gem install --force --local {{ ruby_gems_dir_remote }}/{{ item }}
+  run_once: true

@@ -3,7 +3,6 @@ master_node
 data_node
 client_node
 kafka_node
-yum_repo_server
 
 [data_node]
 10.255.8.214
@@ -19,4 +18,9 @@ yum_repo_server
 [kafka_node]
 
 [yum_repo_server]
+# 多节点部署时填localhost，127.0.0.1会引发错误
+10.255.8.214
+
+[gem_server]
+# 多节点部署时填localhost，127.0.0.1会引发错误
 10.255.8.214

@@ -10,6 +10,9 @@ enable_yum: true
 yum_repo_dir: /data1/mdp162/repolist/repo
 yum_always_up: true
 
+# 放所有gem依赖包的目录
+ruby_gems_dir: /data1/mdp162/gem
+
 ################################
 
 # ENVIRONMENT CONFIGURATIONS END

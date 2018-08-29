@@ -31,14 +31,14 @@
 
     - name: setup nginx
       block:
-        - name: prepare nginx config file
+        - name: prepare nginx config file for yum
           file:
             path: /etc/nginx/conf.d/repo.conf
             state: touch
           when: yum_repo_exists.stat.exists
           delegate_to: "{{ groups['yum_repo_server'][0] }}"
           become: true          
-        - name: configure nginx
+        - name: configure nginx for yum
           when: yum_repo_exists.stat.exists
           delegate_to: "{{ groups['yum_repo_server'][0] }}"
           become: true
