@@ -24,3 +24,6 @@ kafka_node
 [gem_server]
 # 多节点部署时填localhost，127.0.0.1会引发错误
 10.255.8.214
+
+[mdp_node]
+10.255.8.56

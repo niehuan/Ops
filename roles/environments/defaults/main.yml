@@ -52,3 +52,6 @@ ruby_gems_list:
   - elasticsearch-api-5.0.4.gem
   - elasticsearch-transport-5.0.4.gem
   - fluent-plugin-elasticsearch-2.1.1.gem
+
+# docker_compose文件位置
+docker_compose_dir: /data/mdp/docker_compose

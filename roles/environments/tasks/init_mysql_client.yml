@@ -1,0 +1,6 @@
+- name: install mysql client
+  yum:
+    name:  mysql-community-client
+    state: latest
+  
+# TODO: ADD MYSQL BACKUP

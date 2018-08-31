@@ -20,7 +20,7 @@ def generateHostMappings(name, nodes):
     if nodes and nodes != "[]":
         for node in str(nodes).replace("[", "").replace("]", "").split(","):
             if len(node.split(".")) == 4 or node == "localhost":
-                if name in ("mn", "mdp-yum-repo"):
+                if name == "mn":
                     hosts['hosts'].setdefault(node, []).append('%s' % name)
                 else:
                     hosts['hosts'].setdefault(node, []).append('%s%s' % (name, count))
@@ -31,7 +31,6 @@ generateHostMappings("mn", args.master_node)
 generateHostMappings("dn", args.data_node)
 generateHostMappings("cn", args.client_node)
 generateHostMappings("kn", args.kafka_node)
-generateHostMappings("mdp-yum-repo", args.yum)
 
 hosts['all'] = '\n'.join(["%s\t%s" % (i, "\t".join(hosts['hosts'][i])) if i !="127.0.0.1" else "" for i in hosts['hosts']])
 

@@ -21,6 +21,7 @@
     - mdp-config
 
 - name: init java
+  hosts: mdp
   import_tasks: install_jdk.yml
   tags:
     - mdp-all
@@ -33,6 +34,13 @@
     - mdp-all
     - mdp-load-env
     - ruby
+
+- name: init docker env
+  import_tasks: init_docker_env.yml
+  tags:
+    - mdp-all
+    - mdp-load-env
+    - docker
 
 - name: disable repo
   import_tasks: disable_repo.yml
