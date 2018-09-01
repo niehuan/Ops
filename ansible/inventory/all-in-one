@@ -1,21 +1,17 @@
-[mdp:children]
-master_node
-data_node
-client_node
-kafka_node
+[mdp]
+localhost
 
 [data_node]
-10.255.8.214
-10.255.8.56
-10.255.8.93
+localhost
 
 [client_node]
-
+localhost
 
 [master_node]
-10.255.8.56
+localhost
 
 [kafka_node]
+localhost
 
 [yum_repo_server]
 # 多节点部署时填localhost，127.0.0.1会引发错误

@@ -1,3 +1,10 @@
+- name: Gather facts for all hosts
+  hosts: all
+  serial: '{{ kolla_serial|default("0") }}'
+  gather_facts: false
+  tasks:
+    - setup:
+
 - name: prepare configuration fields for MDP services
   hosts: mdp
   gather_facts: false

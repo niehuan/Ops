@@ -1,0 +1,7 @@
+- include_tasks: config.yml
+
+- name: Install zookeeper-server
+  yum:
+    name: "{{ package_name }}"
+    state: latest
+  with_dict: "{{ zookeeper_services }}"

@@ -1,0 +1,10 @@
+- include_tasks: config.yml
+
+- name: Install elasticsearch
+  become: true
+  register: check_elasticsearch_package
+  yum:
+    name: elasticsearch
+    state: latest
+  notify:
+    - Restart elasticsearch service

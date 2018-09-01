@@ -1,0 +1,5 @@
+kafka_services:
+  kafka:
+    group: kafka
+    package_name: kafka_2_5_3_0_37
+    enabled: true

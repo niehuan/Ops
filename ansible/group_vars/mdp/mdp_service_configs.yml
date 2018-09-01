@@ -1,8 +1,9 @@
-############################
+service_name: mdp
 
-# ENVIRONMENT CONFIGURATIONS
+elasticsearch_cluster_name: mdp
 
-############################
+mdp_conf_dir: /data/conf
+node_config_directory: /etc/mdp/config
 
 # 是否使用自定义的yum源
 enable_yum: true
@@ -16,18 +17,8 @@ ruby_gems_dir: /data1/mdp162/gem
 # docker_compose文件位置
 docker_compose_dir: /data1/mdp162/docker-compose
 
-################################
-
-# ENVIRONMENT CONFIGURATIONS END
-
-################################
-
-mdp_conf_dir: /data/conf
-
 ############################
-
 # MDP SERVICE CONFIGURATIONS
-
 ############################
 
 # CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
@@ -56,9 +47,3 @@ executors_host: 127.0.0.1
 
 # summer default port: 8081
 summer_host: 127.0.0.1
-
-################################
-
-# MDP SERVICE CONFIGURATIONS END
-
-################################

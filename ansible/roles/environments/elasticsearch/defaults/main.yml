@@ -1,0 +1,13 @@
+elasticsearch_services:
+  elasticsearch:
+    package_name: elasticsearch-5.4.0
+    group: elasticsearch
+    enabled: true
+
+es_heap_size: "4g"
+es_java_opts: "{% if es_heap_size %}-Xms{{ es_heap_size }} -Xmx{{ es_heap_size }}{%endif%}"
+elasticsearch_cluster_name: "mdp"
+elasticsearch_data_path:
+  - /data1/es/data
+  - /data2
+elasticsearch_log_path: /var/log/aone/elasticsearch

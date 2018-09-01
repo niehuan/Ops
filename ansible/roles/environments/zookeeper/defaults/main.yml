@@ -1,0 +1,9 @@
+zookeeper_services:
+  zookeeper:
+    enabled: true
+    group: zookeeper
+    package_name: zookeeper_2_5_3_0_37-server
+
+zookeeper_client_port: 2181
+zookeeper_peer_port: 2888
+zookeeper_quorum_port: 3888
