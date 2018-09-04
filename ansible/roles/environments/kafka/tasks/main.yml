@@ -1,12 +1,1 @@
----
-- name: Ensuring config directories exist
-  file:
-    path: "{{ node_config_directory }}/kafka"
-    state: directory
-    mode: 0770
-    recurse: yes
-  become: true
-  when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
-  with_dict: "{{ kafka_services }}"
+- include_tasks: "{{ action }}.yml"

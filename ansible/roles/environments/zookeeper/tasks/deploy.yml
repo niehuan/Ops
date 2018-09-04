@@ -2,6 +2,11 @@
 
 - name: Install zookeeper-server
   yum:
-    name: "{{ package_name }}"
+    name: "{{ item.value.package_name }}"
     state: latest
   with_dict: "{{ zookeeper_services }}"
+
+- name: Start zookeeper-server
+  service:
+    name: "zookeeper-server"
+    state: started

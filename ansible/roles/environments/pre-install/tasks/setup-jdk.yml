@@ -2,6 +2,7 @@
   yum:
     name: jdk
     state: latest
+  become: true
 
 - name: configure JAVA_HOME environment variables
   blockinfile:
@@ -13,4 +14,4 @@
 
 - name: enalbe environment variables
   shell: source /etc/profile
-  
+  become: true

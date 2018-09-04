@@ -1,7 +1,0 @@
-- name: set timezone
-  timezone:
-    name: Asia/Shanghai
-  become: true
-  when: enable_ntp
-
-#TODO: IF NTP IS CONFIGURED or setup ntp server

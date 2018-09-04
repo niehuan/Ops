@@ -1,0 +1,78 @@
+- name: install ruby dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - jemalloc*
+    - jemalloc-devel*
+    - ruby-2.5.1
+    - gcc
+  when:
+    - ruby.enabled | bool
+
+- name: check if gem dir exists
+  register: gem_dir_exists
+  stat:
+    path: "{{ ruby_gems_dir }}"
+
+- name: ensure nginx installed
+  become: true
+  yum:
+    name: "nginx"
+    state: present
+  when:
+    - gem_dir_exists.stat.exists and
+      ruby.enabled | bool and
+      inventory_hostname in groups["gems_server"]
+
+- name: create nginx config file for gem
+  become: true
+  file:
+    path: /etc/nginx/conf.d/gem.conf
+    state: touch
+  when:
+    - gem_dir_exists.stat.exists and
+      ruby.enabled | bool and
+      inventory_hostname in groups["gems_server"]
+
+- name: configure nginx for gem
+  become: true
+  blockinfile:
+    path: /etc/nginx/conf.d/gem.conf
+    block: |
+      server {
+            listen {{ ruby_gems_server_port }};
+            server_name     {{ groups['gems_server'][0] }};
+            root    {{ ruby_gems_dir }}/;
+            autoindex    on;
+      }
+  when:
+    - gem_dir_exists.stat.exists and
+      ruby.enabled | bool
+    - inventory_hostname in groups["gems_server"]
+
+- name: reload nginx on gems_server
+  become: true
+  service:
+    name: nginx
+    state: restarted
+  when:
+    - gem_dir_exists.stat.exists and
+      ruby.enabled | bool
+    - inventory_hostname in groups["gems_server"]
+
+- name: ensure tmp gems dir exists
+  file:
+    path: "{{ ruby_gems_dir_remote }}"
+    state: directory
+  when:
+    - ruby.enabled | bool
+
+- name: install gem packages
+  with_items: "{{ ruby_gems_list }}"
+  become: true
+  shell: |
+    curl -o {{ ruby_gems_dir_remote }}/{{ item }} http://{{ groups['gems_server'][0] }}:{{ ruby_server_port }}/{{ item }}
+    gem install --force --local {{ ruby_gems_dir_remote }}/{{ item }}
+  when:
+    - ruby.enabled | bool

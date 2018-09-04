@@ -2,9 +2,43 @@
 
 - name: Install elasticsearch
   become: true
-  register: check_elasticsearch_package
   yum:
     name: elasticsearch
     state: latest
-  notify:
-    - Restart elasticsearch service
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool
+
+- name: Copy sysconfig elasticsearch
+  file:
+    src: "elasticsearch.sysconfig"
+    dest: "/etc/sysconfig/elasticsearch"
+    mode: "0600"
+  become: true
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool
+
+- name: Copy elasticsearch systemd file
+  file:
+    src: "elasticsearch.service"
+    dest: "/usr/lib/systemd/system/elasticsearch.service"
+  become: true
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool
+
+- name: Reload elasticsearch systemd service
+  script: systemctl daemon-reload
+  become: true
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool
+
+- name: Start elasticsearch
+  service: 
+    name: "elasticsearch"
+    state: restarted
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool

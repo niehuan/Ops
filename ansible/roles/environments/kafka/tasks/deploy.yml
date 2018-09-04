@@ -1,0 +1,19 @@
+- include_tasks: config.yml
+
+- name: Install kafka
+  become: true
+  yum:
+    name: "{{ item.value.package_name }}"
+    state: latest
+  with_dict:  "{{ kafka_services }}"
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool
+
+- name: Start kafka
+  service:
+    name: "kafka"
+    state: started
+  when:
+    - inventory_hostname in groups[item.value.group]
+    - item.value.enabled | bool

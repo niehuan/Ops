@@ -2,8 +2,8 @@ service_name: mdp
 
 elasticsearch_cluster_name: mdp
 
-mdp_conf_dir: /data/conf
-node_config_directory: /etc/mdp/config
+mdp_conf_dir: /data/conf # TODO: depreciated!!!
+mdp_config_directory: /etc/mdp/config
 
 # 是否使用自定义的yum源
 enable_yum: true
@@ -16,6 +16,8 @@ ruby_gems_dir: /data1/mdp162/gem
 
 # docker_compose文件位置
 docker_compose_dir: /data1/mdp162/docker-compose
+
+mysql_backup_dir: /data/mysql/mysqlbackup
 
 ############################
 # MDP SERVICE CONFIGURATIONS

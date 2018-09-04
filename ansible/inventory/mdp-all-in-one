@@ -1,0 +1,35 @@
+[mdp_host]
+localhost
+
+[data_node]
+localhost
+
+[client_node]
+localhost
+
+[master_node]
+localhost
+
+[kafka:children]
+data_node
+
+[zookeeper:children]
+data_node
+
+[elasticsearch:children]
+data_node
+
+[mdp_node]
+10.255.8.56
+
+[repo_server]
+localhost
+
+[gems_server:children]
+# 多节点部署时填localhost，127.0.0.1会引发错误
+repo_server
+
+[yum_repo_server:children]
+# 多节点部署时填localhost，127.0.0.1会引发错误
+repo_server
+

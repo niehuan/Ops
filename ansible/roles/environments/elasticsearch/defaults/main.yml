@@ -11,3 +11,4 @@ elasticsearch_data_path:
   - /data1/es/data
   - /data2
 elasticsearch_log_path: /var/log/aone/elasticsearch
+elasticsearch_jvm_size: 4g
