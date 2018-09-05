@@ -1,32 +1,43 @@
 ---
+- name: Gather facts for zookeeper
+  setup:
+
 - name: Ensuring config directories exist
   file:
-    path: "{{ node_config_directory }}/zookeeper"
+    path: "/etc/zookeeper/conf/"
     state: directory
     mode: 0770
     recurse: yes
   become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
-  with_dict: "{{ zookeeper_services }}"
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
 
 - name: Setup zookeeper configuration
   template:
     src: "zookeeper.cfg.j2"
-    dest: "{{ node_config_directory }}/zookeeper/zookeeper.cfg"
+    dest: "/etc/zookeeper/conf/zoo.cfg"
     mode: "0600"
   become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
 
 - name: Configure zookeeper instance id
   template:
     src: "myid.j2"
-    dest: "{{ node_config_directory }}/zookeeper/myid"
+    dest: "/etc/zookeeper/conf/myid"
     mode: "0600"
   become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
+
+- name: Config zookeeper systemd
+  copy:
+    src: "zookeeper-server.service"
+    dest: "/usr/lib/systemd/system/zookeeper-server.service"
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool

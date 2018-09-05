@@ -64,3 +64,5 @@ mysql_password: Collect%2017
 dns_servers:
   - 114.114.114.114
   - 8.8.8.8
+
+cluster_common_password: password

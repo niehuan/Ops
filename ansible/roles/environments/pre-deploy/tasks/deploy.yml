@@ -2,6 +2,8 @@
   when:
     - yum_enabled|default(true)
 
+- include_tasks: "config.yml"
+
 - include_tasks: "setup-jdk.yml"
   when:
     - jdk_enabled|default(true)
@@ -10,13 +12,9 @@
   when:
     - ruby_enabled|default(true)
 
-- name: set timezone
-  timezone:
-    name: Asia/Shanghai
-  become: true
-  when: ntp_enabled|default(false)
-
 - include_tasks: "setup-docker-env.yml"
+
+- include_tasks: "install-mysql-client.yml"
 
 #TODO: IF NTP IS CONFIGURED or setup ntp server
 

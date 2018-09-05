@@ -59,18 +59,18 @@
         - enable_yum|default(true) and yum_repo_exists.stat.exists
       shell: createrepo --workers 20 {{ yum_repo_dir }}
 
-- name: create repo dir
-  file:
-    state: directory
-    path: /etc/yum.repos.d/
-  become: true
-  when:
-    - enable_yum|default(true)
-
 - name: clean yum repo configurations
   file:
     state: absent
     path: /etc/yum.repos.d
+  become: true
+  when:
+    - enable_yum|default(true)
+
+- name: create repo dir
+  file:
+    state: directory
+    path: /etc/yum.repos.d/
   become: true
   when:
     - enable_yum|default(true)

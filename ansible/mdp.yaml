@@ -1,15 +1,11 @@
-- name: Gather facts for all hosts
-  hosts: all
-  serial: '{{ kolla_serial|default("0") }}'
-  gather_facts: false
-  tasks:
-    - setup:
-
-- name: prepare configuration fields for MDP services
-  hosts: mdp
+- hosts: mdp
   gather_facts: false
   roles:
-    - environments
-    - mdp-post-deploy
+    - environments/pre-deploy
+    - environments/elasticsearch
+    - environments/kafka
+    - environments/zookeeper
+    - mdp/pre-deploy
+    - mdp/setup
   vars_files:
-    - "../../group_vars/mdp/mdp_service_configs.yml"
+    - "group_vars/mdp/mdp_service_configs.yml"

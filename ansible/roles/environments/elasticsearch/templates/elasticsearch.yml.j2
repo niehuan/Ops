@@ -1,6 +1,6 @@
 cluster.name: {{ elasticsearch_cluster_name }}
-node.name: {{ hostvars[inventory_hostname][Hostname] }}
-path.data: [{% for path in elasticsearch_data_path %}{{ path }}{% if not loop.last %},{% endif %}{% endfor %}] ## es的数据目录可一可多,这个位置要根据系统硬盘划分来确定目录 
+node.name: {{ ansible_hostname }}
+path.data: {% for path in elasticsearch_data_path %}{{ path }}{% if not loop.last %},{% endif %}{% endfor %} ## es的数据目录可一可多,这个位置要根据系统硬盘划分来确定目录 
 path.logs: {{ elasticsearch_log_path }}
 path.conf: /etc/elasticsearch
 bootstrap.memory_lock: true
@@ -20,4 +20,4 @@ script.max_compilations_per_minute: 100
 #index.cache.field.type: soft
 #indices.breaker.total.limit: 30%
 #indices.breaker.request.limit: 6%
-#indices.breaker.fielddata.limit: 3%
+#indices.breake

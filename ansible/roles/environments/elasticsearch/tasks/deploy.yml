@@ -1,44 +1,39 @@
-- include_tasks: config.yml
-
 - name: Install elasticsearch
   become: true
   yum:
     name: elasticsearch
     state: latest
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
+
+- include_tasks: config.yml
 
 - name: Copy sysconfig elasticsearch
-  file:
+  copy:
     src: "elasticsearch.sysconfig"
     dest: "/etc/sysconfig/elasticsearch"
     mode: "0600"
   become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
 
 - name: Copy elasticsearch systemd file
-  file:
+  copy:
     src: "elasticsearch.service"
     dest: "/usr/lib/systemd/system/elasticsearch.service"
   become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
-
-- name: Reload elasticsearch systemd service
-  script: systemctl daemon-reload
-  become: true
-  when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
 
 - name: Start elasticsearch
-  service: 
+  systemd:
     name: "elasticsearch"
     state: restarted
+    daemon_reload: yes
+  become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool

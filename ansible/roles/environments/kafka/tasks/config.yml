@@ -1,21 +1,42 @@
+- name: Gather facts for kafka
+  setup:
+
 - name: Ensuring config directories exist
   file:
-    path: "{{ node_config_directory }}/kafka"
+    path: "/etc/kafka/conf/"
     state: directory
     mode: 0770
     recurse: yes
   become: true
   when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
-  with_dict: "{{ kafka_services }}"
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool
 
 - name: Config kafka server.properties
-  become: true
-  when:
-    - inventory_hostname in groups[item.value.group]
-    - item.value.enabled | bool
   template:
     src: "kafka.server.properties.j2"
-    dest: "{{ node_config_directory }}"/kafka/server.properties
+    dest: "/etc/kafka/conf/server.properties"
     mode: "0600"
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool
+
+- name: Config kafka env script
+  template:
+    src: "kafka-env.sh.j2"
+    dest: "/etc/kafka/conf/kafka-env.sh"
+    mode: "0600"
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool
+
+- name: Config kafka systemd
+  copy:
+    src: "kafka.service"
+    dest: "/usr/lib/systemd/system/kafka.service"
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool

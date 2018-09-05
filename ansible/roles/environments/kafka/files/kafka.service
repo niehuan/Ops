@@ -1,0 +1,15 @@
+[Unit]
+Description=Kafka
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/kafka/kafka.pid
+ExecStart=/usr/bin/kafka start
+ExecStop=/usr/bin/kafka stop
+Restart=always
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+

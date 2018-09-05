@@ -1,0 +1,6 @@
+export JAVA_HOME=/usr/java/jdk1.8.0_161
+export PATH=$PATH:$JAVA_HOME/bin
+export PID_DIR=/var/run/kafka
+export LOG_DIR=/var/log/kafka
+export KAFKA_KERBEROS_PARAMS=
+export KAFKA_HEAP_OPTS="-Xms{{ kafka_heap_size }} -Xmx{{ kafka_heap_size }} -XX:PermSize=48m -XX:MaxPermSize=48m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35"

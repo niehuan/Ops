@@ -3,18 +3,23 @@
     name:  mysql-community-client
     state: latest
 
+- name: ensure mdp config directory present
+  file:
+    path: "/etc/cron.daily"
+    state: directory
+    
 - name: copy mysql backup script
   template:
     src: mysql_backup.sh.j2
-    dest: "{{ mdp_config_directory }}/cron/mysql_backup.sh"
+    dest: "/etc/cron.daily/mysql_backup.sh"
     mode: u+x
   become: true
 
 - name: setup cron job for mysql backup
   cron:
-    name: "mysql backup"
+    name: "MySQL Backup"
     state: present
     user: root
-    job: "{{ mdp_config_directory }}/cron/mysql_backup.sh {{ mdp_host }}"
+    job: "/etc/cron.daily/mysql_backup.sh {{ groups['mysql'][0] }}"
     minute: "0"
     hour: "3"

@@ -1,12 +1,18 @@
-- include_tasks: config.yml
-
 - name: Install zookeeper-server
   yum:
-    name: "{{ item.value.package_name }}"
+    name: "{{ zookeeper_package_name }}"
     state: latest
-  with_dict: "{{ zookeeper_services }}"
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
+
+- include_tasks: config.yml
 
 - name: Start zookeeper-server
   service:
     name: "zookeeper-server"
-    state: started
+    state: restarted
+    daemon_reload: yes
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
