@@ -1,9 +1,9 @@
 # elasticsearch connection properties
 {% set i = 0 %}
-{% for esconf in apl_elasticsearch_configuration_ip %}
-analyze.es.node[{{ i }}].host={{ esconf }}
-analyze.es.node[{{ i }}].port={{ es_port }}
-analyze.es.node[{{ i }}].rest={{ es_restport }}
+{% for esnode in elasticsearch_host %}
+analyze.es.node[{{ i }}].host={{ esnode }}
+analyze.es.node[{{ i }}].port=9300
+analyze.es.node[{{ i }}].rest=9200
 {% set i = i + 1 %}
 {% endfor %}
 

@@ -8,7 +8,7 @@ spring:
   application:
     name: aone-gateway
   data.elasticsearch:
-    cluster-nodes: "{% for esconf in apl_elasticsearch_configuration_ip %}{{ esconf }}:{{ es_port }}{% if not loop.last %},{% endif %}{% if loop.last %}"
+    cluster-nodes: "{% for esnode in elasticsearch_host %}{{ esnode }}:{{ es_port }}{% if not loop.last %},{% endif %}{% if loop.last %}"
 {% endif %}{% endfor %}
     properties:
       "client.transport.ignore_cluster_name": true

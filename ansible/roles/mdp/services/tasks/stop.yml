@@ -1,0 +1,21 @@
+- name: Get running containers
+  register: running_containers
+  command: docker ps --format "{{ "{{" }}.Names{{ "}}" }}"
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Stop containers
+  shell: docker stop {{ item }}
+  with_items: "{{ container_names }}"
+  when:
+    - inventory_hostname in groups['mdp_node'] and
+      item in running_containers.stdout
+
+- name: Stop collect-agent
+  systemd:
+    name: collect-agent
+    state: stopped
+  become: true
+  when:
+    - (inventory_hostname not in groups['mdp_node']) or
+      groups['mdp']|length == 1

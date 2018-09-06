@@ -1,6 +1,0 @@
----
-- name: change hostname
-  shell: |
-    hostnamectl set-hostname {{ Hostname }}
-    source ~/.bashrc
-  

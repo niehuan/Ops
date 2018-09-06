@@ -98,8 +98,8 @@ log_del:
 summer:
   es:
     node:
-{% for esconf in apl_elasticsearch_configuration_ip %}
-      - host: {{ esconf }}
+{% for esnode in elasticsearch_host %}
+      - host: {{ esnode }}
         port: {{ es_port }}
 {% endfor %}
 

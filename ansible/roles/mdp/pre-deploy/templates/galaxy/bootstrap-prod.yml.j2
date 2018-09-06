@@ -67,8 +67,8 @@ management:
 analyze:
   es:
     node:
-{% for esconf in apl_elasticsearch_configuration_ip %}
-      - host: {{ esconf }}
+{% for esnode in elasticsearch_host %}
+      - host: {{ esnode }}
         port: {{ es_port }}
 {% endfor %}
     job:
@@ -82,15 +82,15 @@ analyze:
       source_alias: es_source
 collect:
   es:
-    connect: {% for esconf in apl_elasticsearch_configuration_ip %}{{ esconf }}:{{ es_restport }}{% if not loop.last %},{% endif %}{% if loop.last %}
+    connect: {% for esnode in elasticsearch_host %}{{ esnode }}:{{ es_restport }}{% if not loop.last %},{% endif %}{% if loop.last %}
 
 {% endif %}{% endfor %}
     replica: {{ es_replica }}
     shard: {{ es_shard }}
 kafka:
   broker:
-{% for esconf in apl_elasticsearch_configuration_ip %}
-    - host: {{ esconf }}
+{% for esnode in elasticsearch_host %}
+    - host: {{ esnode }}
       port: {{ kafka_port }}
 {% endfor %}
 

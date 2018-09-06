@@ -13,79 +13,83 @@ services:
     restart: always
     volumes: ['/etc/localtime:/etc/localtime:ro']
   es-sql-engine:
-    container_name: es-sql-engine-1.6.2
-    image: harbor.dev.aone.ai/aone/es-sql-engine:1.6.2-qa
+    container_name: es-sql-engine-{{ version }}
+    image: harbor.dev.aone.ai/aone/es-sql-engine:{{ version }}-qa
     ports: ['8900:8900']
     restart: always
-    volumes: ['/data/conf/es-sql-engine/bootstrap.yml:/bootstrap.yml', '/data/conf/es-sql-engine/application-analyze.properties:/application-analyze.properties',
+    volumes: ['{{ mdp_config_directory }}/es-sql-engine/bootstrap.yml:/bootstrap.yml',
+      '{{ container_logs_directory }}/es-sql-engine:/var/log/es-sql-engine',
+      '{{ mdp_config_directory }}/es-sql-engine/application-analyze.properties:/application-analyze.properties',
       '/etc/localtime:/etc/localtime:ro']
   executors:
-    container_name: executors-1.6.2
-    image: harbor.dev.aone.ai/aone/executors:1.6.2-qa
+    container_name: executors-{{ version }}
+    image: harbor.dev.aone.ai/aone/executors:{{ version }}-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/nginx/html:/usr/share/nginx/html', '/data/conf/executor/bootstrap.yml:/bootstrap.yml',
-      '/data/conf/executor/log4j2.xml:/log4j2.xml', '/data/conf/executor/bootstrap-sw.yml:/bootstrap-sw.yml',
-      '/etc/localtime:/etc/localtime:ro', '/data/logs:/logs']
+    volumes: ['{{ mdp_config_directory }}/nginx/html:/usr/share/nginx/html', '{{ mdp_config_directory }}/executor/bootstrap.yml:/bootstrap.yml',
+      '{{ mdp_config_directory }}/executor/log4j2.xml:/log4j2.xml', '{{ mdp_config_directory }}/executor/bootstrap-sw.yml:/bootstrap-sw.yml',
+      '/etc/localtime:/etc/localtime:ro', '{{ container_logs_directory }}:/logs']
   fe-mdp:
-    container_name: fe-mdp-1.6.2
-    image: harbor.dev.aone.ai/aone/fe-mdp:1.6.2.6-qa
+    container_name: fe-mdp-{{ version }}
+    image: harbor.dev.aone.ai/aone/fe-mdp:{{ version }}.6-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/nginx/html/report:/usr/share/nginx/html/report', '/data/conf/nginx/conf.d/dip.conf:/etc/nginx/conf.d/dip.conf',
+    volumes: ['{{ mdp_config_directory }}/nginx/html/report:/usr/share/nginx/html/report',
+      '{{ mdp_config_directory }}/nginx/conf.d/dip.conf:/etc/nginx/conf.d/dip.conf',
       '/etc/localtime:/etc/localtime:ro']
 
   galaxy:
-    container_name: galaxy-1.6.2
-    image: harbor.dev.aone.ai/aone/galaxy:1.6.2-qa
+    container_name: galaxy-{{ version }}
+    image: harbor.dev.aone.ai/aone/galaxy:{{ version }}-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/galaxy/bootstrap.yml:/bootstrap.yml', '/data/conf/galaxy/log4j2.xml:/log4j2.xml',
-      '/data/conf/galaxy/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
-      '/data/logs:/logs']
+    volumes: ['{{ mdp_config_directory }}/galaxy/bootstrap.yml:/bootstrap.yml', '{{ mdp_config_directory }}/galaxy/log4j2.xml:/log4j2.xml',
+      '{{ mdp_config_directory }}/galaxy/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '{{ container_logs_directory }}:/logs']
   gateway:
-    container_name: gateway-1.6.2
-    image: harbor.dev.aone.ai/aone/gateway:1.6.2-qa
+    container_name: gateway-{{ version }}
+    image: harbor.dev.aone.ai/aone/gateway:{{ version }}-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/gateway/bootstrap.yml:/bootstrap.yml', '/data/conf/gateway/log4j2.xml:/log4j2.xml',
-      '/data/conf/gateway/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
-      '/data/logs:/logs']
+    volumes: ['{{ mdp_config_directory }}/gateway/bootstrap.yml:/bootstrap.yml', '{{ mdp_config_directory }}/gateway/log4j2.xml:/log4j2.xml',
+      '{{ mdp_config_directory }}/gateway/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '{{ container_logs_directory }}:/logs']
   mysql:
     container_name: mysql-5.7
     environment: {MYSQL_ROOT_PASSWORD: Collect%2017}
     image: harbor.dev.aone.ai/aone/mysql:5.7
     network_mode: host
     restart: always
-    volumes: ['/data/mysql:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '/data/my.cnf:/etc/mysql/my.cnf']
+    volumes: ['/data/mysql:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '{{ mdp_config_directory }}/mysql/my.cnf:/etc/mysql/my.cnf']
   nodereport:
-    container_name: nodereport-1.6.2
-    image: harbor.dev.aone.ai/aone/nodereport:1.6.2-qa
+    container_name: nodereport-{{ version }}
+    image: harbor.dev.aone.ai/aone/nodereport:{{ version }}-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/nginx/html:/usr/share/nginx/html', '/data/conf/nodereport/nodeport.json:/var/www/app/current/nodeport.json',
+    volumes: ['{{ mdp_config_directory }}/nginx/html:/usr/share/nginx/html',
+      '{{ mdp_config_directory }}/nodereport/nodeport.json:/var/www/app/current/nodeport.json',
       '/etc/localtime:/etc/localtime:ro']
   rbac:
-    container_name: rbac-1.6.2
-    image: harbor.dev.aone.ai/aone/rbac:1.6.2-qa
+    container_name: rbac-{{ version }}
+    image: harbor.dev.aone.ai/aone/rbac:{{ version }}-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/rbac/bootstrap.yml:/bootstrap.yml', '/data/conf/rbac/log4j2.xml:/log4j2.xml',
-      '/data/conf/rbac/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
-      '/data/logs:/logs']
+    volumes: ['{{ mdp_config_directory }}/rbac/bootstrap.yml:/bootstrap.yml', '{{ mdp_config_directory }}/rbac/log4j2.xml:/log4j2.xml',
+      '{{ mdp_config_directory }}/rbac/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '{{ container_logs_directory }}:/logs']
   scheduler:
-    container_name: scheduler-1.6.2
-    image: harbor.dev.aone.ai/aone/scheduler:1.6.2-qa
+    container_name: scheduler-{{ version }}
+    image: harbor.dev.aone.ai/aone/scheduler:{{ version }}-qa
     ports: ['8889:8889']
     restart: always
-    volumes: ['/data/conf/scheduler/bootstrap.yml:/bootstrap.yml', '/data/conf/scheduler/log4j2.xml:/log4j2.xml',
-      '/data/conf/scheduler/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
-      '/data/logs:/logs']
+    volumes: ['{{ mdp_config_directory }}/scheduler/bootstrap.yml:/bootstrap.yml', '{{ mdp_config_directory }}/scheduler/log4j2.xml:/log4j2.xml',
+      '{{ mdp_config_directory }}/scheduler/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '{{ container_logs_directory }}:/logs']
   summer:
-    container_name: summer-1.6.2
-    image: harbor.dev.aone.ai/aone/summer:1.6.2-qa
+    container_name: summer-{{ version }}
+    image: harbor.dev.aone.ai/aone/summer:{{ version }}-qa
     network_mode: host
     restart: always
-    volumes: ['/data/conf/summer/bootstrap.yml:/bootstrap.yml', '/data/conf/summer/log4j2.xml:/log4j2.xml',
-      '/data/conf/summer/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
-      '/data/logs:/logs']
+    volumes: ['{{ mdp_config_directory }}/summer/bootstrap.yml:/bootstrap.yml', '{{ mdp_config_directory }}/summer/log4j2.xml:/log4j2.xml',
+      '{{ mdp_config_directory }}/summer/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
+      '{{ container_logs_directory }}:/logs']

@@ -6,8 +6,7 @@ elasticsearch_data_path:
   - /data1/elasticsearch/data
   - /data2
 
-mdp_conf_dir: /data/conf # TODO: depreciated!!!
-mdp_config_directory: /etc/mdp/config
+mdp_config_directory: /data/conf
 
 # 是否使用自定义的yum源
 enable_yum: true
@@ -31,16 +30,8 @@ mysql_backup_dir: /data/mysql/mysqlbackup
 consul_host: 127.0.0.1
 consul_nodename: dn1
 
-# APL (es-sql-engine)
-# es cluster nodes host
-apl_elasticsearch_configuration_ip: 
-  - 127.0.0.1
-
 # gateway default port: 9995, and ES cluster node ip 
 gateway_host: 127.0.0.1 
-
-# node-report config 
-mysql_host: 127.0.0.1
 
 # rbac default port: 8867
 rbac_host: 127.0.0.1

@@ -13,7 +13,7 @@
 - name: init docker-compose
   copy:
     src: "{{ docker_compose_dir }}"
-    dest: /usr/local/bin/docker-compose
+    dest: /usr/bin/docker-compose
     mode: u+x
   when:
     - inventory_hostname in groups["mdp_node"]

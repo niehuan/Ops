@@ -1,0 +1,8 @@
+- name: Start elasticsearch
+  systemd:
+    name: "elasticsearch"
+    state: started
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool

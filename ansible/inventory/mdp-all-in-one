@@ -1,14 +1,14 @@
 [mdp_node]
-localhost
+10.255.8.214
 
-[data_node]
-localhost
+[data_node:children]
+mdp_node
 
-[client_node]
-localhost
+[client_node:children]
+data_node
 
-[master_node]
-localhost
+[master_node:children]
+data_node
 
 [kafka:children]
 data_node
@@ -19,19 +19,17 @@ data_node
 [elasticsearch:children]
 data_node
 
-[repo_server]
-localhost
+[repo_server:children]
+data_node
 
 [gems_server:children]
-# 多节点部署时填localhost，127.0.0.1会引发错误
 repo_server
 
 [yum_repo_server:children]
-# 多节点部署时填localhost，127.0.0.1会引发错误
 repo_server
 
 [mysql:children]
-mdp_node
+data_node
 
 [mdp:children]
 yum_repo_server

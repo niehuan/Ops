@@ -1,0 +1,22 @@
+- name: Stop nginx
+  systemd:
+    name: nginx
+    state: stopped
+  become: true
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Start collect-agent
+  systemd:
+    name: collect-agent
+    state: started
+  become: true
+  when:
+    - (inventory_hostname not in groups['mdp_node']) or
+      groups['mdp']|length == 1
+
+- name: Start docker containers
+  shell: docker-compose  -f {{ mdp_config_directory }}/docker-compose.yml up --no-recreate -d
+  become: true
+  when:
+    - inventory_hostname in groups['mdp_node']

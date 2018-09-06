@@ -28,7 +28,7 @@
     - inventory_hostname in groups['elasticsearch']
     - elasticsearch_enabled | bool
 
-- name: Start elasticsearch
+- name: Restart elasticsearch
   systemd:
     name: "elasticsearch"
     state: restarted

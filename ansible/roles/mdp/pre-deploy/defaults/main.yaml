@@ -1,5 +1,6 @@
 # MDP CONFIGURATIONS LOCATION:
-mdp_conf_dir: /data/conf
+mdp_config_directory: /data/conf
+container_logs_directory: /data/logs
 
 # default tmp path directory
 automata_tmp_dir: /tmp/mdp
@@ -39,6 +40,7 @@ mysql_port: 3306
 mysql_user: root
 mysql_pass: Collect%2017
 mysql_enconding: UTF-8
+mysql_host: "{{ groups['mysql'][0] }}"
 
 # nodereport default port: 3333
 nodereport_port: 3333
@@ -61,3 +63,5 @@ jetty_port: 6007
 summer_port: 8081
 
 # nginx default port: 9995
+
+elasticsearch_host: "{{ groups['elasticsearch'] }}"

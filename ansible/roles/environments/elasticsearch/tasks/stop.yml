@@ -1,0 +1,8 @@
+- name: Stop elasticsearch
+  systemd:
+    name: "elasticsearch"
+    state: stopped
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
