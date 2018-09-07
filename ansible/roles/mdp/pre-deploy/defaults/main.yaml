@@ -1,6 +1,7 @@
 # MDP CONFIGURATIONS LOCATION:
 mdp_config_directory: /data/conf
 container_logs_directory: /data/logs
+mysql_container_volume_dir: /data/mysql/data
 
 # default tmp path directory
 automata_tmp_dir: /tmp/mdp

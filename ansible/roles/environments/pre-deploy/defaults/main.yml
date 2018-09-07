@@ -1,7 +1,6 @@
 jdk_enabled: true
 
 yum_enabled: true
-yum_repo_dir: /data/mdp/repo
 yum_repo_port: 80
 # 配置 yum_always_up==true 时不关闭nginx
 yum_always_up: false

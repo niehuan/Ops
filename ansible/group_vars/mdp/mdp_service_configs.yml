@@ -3,24 +3,26 @@ cluster_common_password: Aone.ai2018!
 elasticsearch_cluster_name: mdp
 elasticsearch_heap_size: 4g
 elasticsearch_data_path:
-  - /data1/elasticsearch/data
-  - /data2
+  - /data/elasticsearch/data
+  - /data/es/data
 
-mdp_config_directory: /data/conf
 
 # 是否使用自定义的yum源
 enable_yum: true
 # yum源压缩包解压缩后，yam源的绝对路径，这个路径是只包含rpm包的路径
-yum_repo_dir: /data/repolist/repo
+yum_repo_dir: /data/mdp163/repolist/repo
 yum_always_up: true
 
 # 放所有gem依赖包的目录
-ruby_gems_dir: /data/repolist/gem
+ruby_gems_dir: /data/mdp163/repolist/gem
 
 # docker_compose文件位置
-docker_compose_dir: /data/docker-compose
+docker_compose_dir: /data/mdp162/docker-compose
+mdp_docker_images_dir: /data/mdp162/mdp-docker-images.tgz
+mdp_config_directory: /data/conf
 
 mysql_backup_dir: /data/mysql/mysqlbackup
+mysql_container_volume_dir: /data/mysql/data
 
 ############################
 # MDP SERVICE CONFIGURATIONS
@@ -28,7 +30,7 @@ mysql_backup_dir: /data/mysql/mysqlbackup
 
 # CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
 consul_host: 127.0.0.1
-consul_nodename: dn1
+consul_nodename: 127.0.0.1
 
 # gateway default port: 9995, and ES cluster node ip 
 gateway_host: 127.0.0.1 

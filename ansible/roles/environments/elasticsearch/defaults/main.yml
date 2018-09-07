@@ -9,4 +9,4 @@ elasticsearch_cluster_name: mdp
 elasticsearch_data_path:
   - /data1/elasticsearch/data
   - /data2
-elasticsearch_log_path: /var/log/aone/elasticsearch
+elasticsearch_log_path: /var/log/elasticsearch

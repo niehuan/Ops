@@ -32,7 +32,7 @@
   block:
     - name: Create collect agent configuration dir
       file:
-        path: "{{ mdp_config_directory }}/collect-agent"
+        path: "/etc/collect-agent"
         state: directory
       when:
         - inventory_hostname in groups["mdp_node"]

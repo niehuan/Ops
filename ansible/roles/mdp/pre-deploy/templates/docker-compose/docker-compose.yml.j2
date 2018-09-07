@@ -60,7 +60,7 @@ services:
     image: harbor.dev.aone.ai/aone/mysql:5.7
     network_mode: host
     restart: always
-    volumes: ['/data/mysql:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '{{ mdp_config_directory }}/mysql/my.cnf:/etc/mysql/my.cnf']
+    volumes: ['{{ mysql_container_volume_dir }}:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '{{ mdp_config_directory }}/mysql/my.cnf:/etc/mysql/my.cnf']
   nodereport:
     container_name: nodereport-{{ version }}
     image: harbor.dev.aone.ai/aone/nodereport:{{ version }}-qa

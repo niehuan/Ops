@@ -15,16 +15,3 @@
 - include_tasks: "setup-docker-env.yml"
 
 - include_tasks: "install-mysql-client.yml"
-
-#TODO: IF NTP IS CONFIGURED or setup ntp server
-
-# # STOP NGINX AFTER ZOOKEEPER/KAFKA/ES is installed
-# - name: stop nginx
-#   service:
-#     name: nginx
-#     state: stopped
-#   become: true
-#   when:
-#     - yum_always_up|default(false) and (yum_enabled|default(true) or ruby_enabled|default(true))
-#     - inventory_hostname in groups["repo_server"]
-# # STOP NGINX AFTER ZOOKEEPER/KAFKA/ES is installed

@@ -8,6 +8,7 @@
         path: "{{ yum_repo_dir }}"
       when:
         - inventory_hostname in groups["yum_repo_server"]
+
     - name: instal dependencies
       yum:
         name: "{{ yum_repo_dir }}/{{ item }}"

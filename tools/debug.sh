@@ -1,3 +1,3 @@
-# if "The following packages have pending transactions:"
+# "The following packages have pending transactions:"
 
 yum-complete-transaction --cleanup-only

@@ -5,7 +5,7 @@
   template:
     src: "elasticsearch.yml.j2"
     dest: "/etc/elasticsearch/elasticsearch.yml"
-    mode: "0600"
+    mode: "0655"
   become: true
   when:
     - inventory_hostname in groups['elasticsearch']
@@ -15,7 +15,7 @@
   template:
     src: "jvm.options.j2"
     dest: "/etc/elasticsearch/jvm.options"
-    mode: "0600"
+    mode: "0655"
   become: true
   when:
     - inventory_hostname in groups['elasticsearch']

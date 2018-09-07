@@ -1,5 +1,5 @@
 ---
-- name: shutdown firewalld
+- name: Shutdown firewalld
   block:
     - name: disable firewalld
       service:
@@ -10,11 +10,14 @@
         state: disabled
   become: true
 
-- name: disable ipv6
+- name: Shutdown swap
+  command: swapoff -a
+
+- name: Disable ipv6
   sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
-    state: absent
+    state: present
     sysctl_file: /etc/sysctl.conf
     reload: yes
   with_items:
@@ -23,7 +26,14 @@
     - {"key": "net.ipv6.conf.eth0.disable_ipv6", "value": 1}
     - {"key": "vm.max_map_count", "value": 262144}
 
-- name: configure bashrc
+- name: Update ulimit
+  blockinfile:
+    block: |
+      * soft nproc 4096 
+      root soft nproc unlimited 
+    path: /etc/security/limits.d/20-nproc.conf
+
+- name: Configure bashrc
   block:
     - name: set bashrc
       # notice: bashrc functions are appended to current user's bashrc file
@@ -48,7 +58,7 @@
     - name: enable bashrc
       shell: source ~/.bashrc
 
-- name: set hostname
+- name: Set hostname
   block:
     - name: prepare script
       block:
@@ -107,17 +117,15 @@
         path: "/tmp/automata/hostname_mapping.py"
         state: absent
 
-- name: add dns server
+- name: Add DNS server
   blockinfile:
     path: /etc/resolv.conf
     block: nameserver {{ item }}
   with_items: "{{ dns_servers }}"
   become: true
 
-- name: shutdown swap
-  command: swapoff -a
-
-- name: set timezone
+# TODO: ADD NTP SERVER CONFIG 
+- name: Set timezone
   timezone:
     name: Asia/Shanghai
   become: true

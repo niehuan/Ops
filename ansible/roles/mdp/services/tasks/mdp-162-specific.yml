@@ -20,18 +20,23 @@
 - name: Collect hosts facts
   setup:
 
+- name: Waiting MySql ready
+  shell: while [[ ! $(docker ps --format {{ "{{" }}.Status{{ "}}" }}) =~ ^Up.* ]]; do sleep 3s; done
+  when:
+    - inventory_hostname in groups['mdp_node']
+
 - name: Setup MySQL databases
   shell: |
-    mysql -uroot -pCollect%2017 -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} < /tmp/automata/sql/create_dip_databases.sql
-    mysql -uroot -pCollect%2017 -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} node < /tmp/automata/sql/node.sql
-    mysql -uroot -pCollect%2017 -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} scheduler  < /tmp/automata/sql/scheduler.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} < /tmp/automata/sql/create_dip_databases.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} node < /tmp/automata/sql/node.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} scheduler  < /tmp/automata/sql/scheduler.sql
   when:
     - inventory_hostname in groups['mdp_node']
 
 - include_tasks: "start.yml"
 
 # - name: Setup Summer Database
-#   shell: mysql -uroot -pCollect%2017 -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} summer < /tmp/automata/sql/summer.sql
+#   shell: mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} summer < /tmp/automata/sql/summer.sql
 #   when:
 #     - inventory_hostname in groups['mdp_node']
 
@@ -42,8 +47,13 @@
   when:
     - inventory_hostname in groups['mdp_node']
 
-- name: Waiting galaxy service ready
+- name: Waiting rbac service ready
   shell: i=0; while((i<100)); do if [ $(curl http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:9999/actuator/info) == "{}" ]; then exit 0; else i+=1; sleep 30;fi;done
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Waiting galaxy service ready
+  shell: i=0; while((i<100)); do if [ $(curl http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:{{ rbac_port|default("8867") }}) == "" ]; then exit 0; else i+=1; sleep 30;fi;done
   when:
     - inventory_hostname in groups['mdp_node']
 
@@ -53,6 +63,11 @@
     method: GET
     headers:
       accept: "application/json"
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Waiting galaxy service ready
+  shell: i=0; while((i<100)); do if [ $(curl http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:{{ galaxy_port|default("9999") }}/actuator/info) == "{}" ]; then exit 0; else i+=1; sleep 30;fi;done
   when:
     - inventory_hostname in groups['mdp_node']
 

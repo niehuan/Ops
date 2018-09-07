@@ -1,0 +1,5 @@
+#!/bin/bash
+
+AUTOMATA_HOME=${AUTOMATA_HOME:-/usr/share/automata}
+
+sh ${AUTOMATA_HOME}/tools/mdp.sh "$@"

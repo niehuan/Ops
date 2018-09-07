@@ -39,6 +39,34 @@
   when:
     - inventory_hostname in groups['mdp_node']
 
+- name: Ensure elasticsearch is running
+  systemd:
+    name: elasticsearch
+    state: started
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | default(true)
+
+- name: Ensure kafka is running
+  systemd:
+    name: kafka
+    state: started
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | default(true)
+
+- name: Ensure zookeeper is running
+  systemd:
+    name: zookeeper-server
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | default(true)
+
 - include_tasks: "mdp-162-specific.yml"
   when: version == "1.6.2"
   ignore_errors: True
+  when:
+    - inventory_hostname in groups['mdp_node']
