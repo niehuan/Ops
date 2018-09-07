@@ -1,5 +1,110 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-AUTOMATA_HOME=${AUTOMATA_HOME:-/usr/share/automata}
+function banner {
+cat << EOBANNER
 
-sh ${AUTOMATA_HOME}/tools/mdp.sh "$@"
+.       ___          _____          ___     .
+.      /__/\        /  /::\        /  /\    .
+.     |  |::\      /  /:/\:\      /  /::\   .
+.     |  |:|:\    /  /:/  \:\    /  /:/\:\  .
+.   __|__|:|\:\  /__/:/ \__\:|  /  /:/~/:/  .
+.  /__/::::| \:\ \  \:\ /  /:/ /__/:/ /:/   .
+.  \  \:\~~\__\/  \  \:\  /:/  \  \:\/:/    .
+.   \  \:\         \  \:\/:/    \  \::/     .
+.    \  \:\         \  \::/      \  \:\     .
+.     \  \:\         \__\/        \  \:\    .
+.      \__\/                       \__\/    .
+
+EOBANNER
+}
+
+function usage {
+cat << EOUSE
+Usage: aone-mdp [options] {start|stop|deploy|restart|setup}a
+
+Options:
+    --hosts, -i <ansible_hosts_file_path>       Specify path to ansible host file
+    --version, -v <mdp_version>                 Specify mdp version to install (default 1.6.2)
+    --config, -c <customed_config_file_path>    MDP customed config file path (yaml file path)
+    --debug, -d                                 Debug with ansible
+EOUSE
+}
+
+INVENTORY="/etc/automata/mdp/mdp-all-in-one"
+VARS_FILE="/etc/automata/mdp/mdp_service_configs.yml"
+VERSION="1.6.2"
+AUTOMATA_HOME="/usr/share/automata"
+
+while [ "$#" -gt 0 ]; do
+case "$1" in
+    (--hosts|-i)
+        INVENTORY="$2"
+        shift 2
+        ;;
+    (--config|-c)
+        VARS_FILE="$2"
+        shift 2
+        ;;
+    (--version|-v)
+        VERSION="$2"
+        shift 2
+        ;;
+    (--debug|-d)
+        DEBUG="-vvvv"
+        shift 1
+        ;;
+    (--help|-h)
+        usage
+        shift
+        exit 0
+        ;;
+    (*)
+        break
+        ;;
+esac
+done
+
+export ANSIBLE_CONFIG="/usr/share/automata/ansible.cfg"
+
+case "$1" in
+    (start)
+        banner
+        echo "Starting MDP $VERSION Services..."
+        if [[ -f $VARS_FILE && -f $INVENTORY ]]; then
+            ansible-playbook -i $INVENTORY ${AUTOMATA_HOME}/ansible/mdp.yaml -e action=start -e version=$VERSION -e variable_file=$VARS_FILE $DEBUG
+        else
+            echo "$INVENTORY OR $VARS_FILE not exist"
+        fi
+        ;;
+    (stop)
+        if [[ -f $VARS_FILE && -f $INVENTORY ]]; then
+            ansible-playbook -i $INVENTORY ${AUTOMATA_HOME}/ansible/mdp.yaml -e action=stop -e version=$VERSION -e variable_file=$VARS_FILE $DEBUG
+        else
+            echo "$INVENTORY OR $VARS_FILE not exist"
+        fi
+        ;;
+    (deploy)
+        banner
+        echo "Installing MDP version $VERSION..."
+        if [[ -f $VARS_FILE && -f $INVENTORY ]]; then
+            ansible-playbook -i $INVENTORY ${AUTOMATA_HOME}/ansible/mdp.yaml -e action=deploy -e version=$VERSION -e variable_file=$VARS_FILE $DEBUG
+        else
+            echo "$INVENTORY OR $VARS_FILE not exist"
+        fi
+        ;;
+    (restart)
+        if [[ -f $VARS_FILE && -f $INVENTORY ]]; then
+            ansible-playbook -i $INVENTORY ${AUTOMATA_HOME}/ansible/mdp.yaml -e action=stop -e version=$VERSION -e variable_file=$VARS_FILE $DEBUG
+            ansible-playbook -i $INVENTORY ${AUTOMATA_HOME}/ansible/mdp.yaml -e action=start -e version=$VERSION -e variable_file=$VARS_FILE $DEBUG
+        else
+            echo "$INVENTORY OR $VARS_FILE not exist"
+        fi
+        ;;
+    (setup)
+        sh ${AUTOMATA_HOME}/tools/setup.sh
+        ;;
+    (*)
+        usage
+        exit 1
+        ;;
+esac

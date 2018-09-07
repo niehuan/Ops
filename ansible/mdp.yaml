@@ -8,4 +8,4 @@
     - mdp/pre-deploy
     - mdp/services
   vars_files:
-    - "group_vars/mdp/mdp_service_configs.yml"
+    - "{{ variable_file }}"
