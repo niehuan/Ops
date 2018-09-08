@@ -20,7 +20,7 @@ EOBANNER
 
 function usage {
 cat << EOUSE
-Usage: aone-mdp [options] {start|stop|deploy|restart|setup}a
+Usage: aone-mdp [options] {start|stop|deploy|restart|setup}
 
 Options:
     --hosts, -i <ansible_hosts_file_path>       Specify path to ansible host file
@@ -34,6 +34,8 @@ INVENTORY="/etc/automata/mdp/mdp-all-in-one"
 VARS_FILE="/etc/automata/mdp/mdp_service_configs.yml"
 VERSION="1.6.2"
 AUTOMATA_HOME="/usr/share/automata"
+
+export AUTOMATA_HOME
 
 while [ "$#" -gt 0 ]; do
 case "$1" in
@@ -101,7 +103,7 @@ case "$1" in
         fi
         ;;
     (setup)
-        sh ${AUTOMATA_HOME}/tools/setup.sh
+        sh ${AUTOMATA_HOME}/tools/setup.sh $INVENTORY $VARS_FILE
         ;;
     (*)
         usage

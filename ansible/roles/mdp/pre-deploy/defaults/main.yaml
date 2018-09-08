@@ -1,3 +1,26 @@
+############################
+# MDP SERVICE CONFIGURATIONS
+############################
+
+# CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
+consul_host: "{{ groups['mdp_node'][0] }}"
+consul_nodename: "{{ groups['mdp_node'][0] }}"
+
+# gateway default port: 9995, and ES cluster node ip 
+gateway_host: "{{ groups['mdp_node'][0] }}" 
+
+# rbac default port: 8867
+rbac_host: "{{ groups['mdp_node'][0] }}"
+
+# scheduler default port: 8889
+scheduler_host: "{{ groups['mdp_node'][0] }}"
+
+# executors default port: 7010
+executors_host: "{{ groups['mdp_node'][0] }}"
+
+# summer default port: 8081
+summer_host: "{{ groups['mdp_node'][0] }}"
+
 # MDP CONFIGURATIONS LOCATION:
 mdp_config_directory: /data/conf
 container_logs_directory: /data/logs

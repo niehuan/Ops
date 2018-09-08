@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Setup tmp yum local repo
-cd $(dirname "$0")/../
+AUTOMATA_HOME=${AUTOMATA_HOME:-/usr/share/automata}
+export INVENTORY=${1:-/etc/automata/mdp/mdp-all-in-one}
+export VARS_FILE=${2:-/etc/automata/mdp/mdp_service_configs.yml}
 
-yum_repo_dir=$(grep -rnw ./ansible/group_vars/mdp/mdp_service_configs.yml -e "yum_repo_dir:" | awk '{print $2}')
-pwd=$(grep -rnw ./ansible/group_vars/mdp/mdp_service_configs.yml -e "cluster_common_password:" | awk '{print $2}')
-ruby_gems_dir=$(grep -rnw ./ansible/group_vars/mdp/mdp_service_configs.yml -e "ruby_gems_dir:" | awk '{print $2}')
-docker_compose_dir=$(grep -rnw ./ansible/group_vars/mdp/mdp_service_configs.yml -e "docker_compose_dir:" | awk '{print $2}')
-docker_images_tar=$(grep -rni ./ansible/group_vars/mdp/mdp_service_configs.yml -e "docker_images_dir:" | awk '{print $2}')
+yum_repo_dir=$(grep -rnw ${VARS_FILE} -e "yum_repo_dir:" | awk '{print $2}')
+pwd=$(grep -rnw ${VARS_FILE} -e "cluster_common_password:" | awk '{print $2}')
+ruby_gems_dir=$(grep -rnw ${VARS_FILE} -e "ruby_gems_dir:" | awk '{print $2}')
+docker_compose_dir=$(grep -rnw ${VARS_FILE} -e "docker_compose_dir:" | awk '{print $2}')
+docker_images_tar=$(grep -rni ${VARS_FILE} -e "docker_images_dir:" | awk '{print $2}')
 
 mkdir -p /tmp/repo_backup/
-mv /etc/yum.repos.d/*.repo /tmp/repo_backup/
+rm -f /etc/yum.repos.d/*
 
 if [ ! -d $yum_repo_dir ]; then
     echo "yum repo directory not exist: $yum_repo_dir"
@@ -41,9 +43,10 @@ yum clean all
 yum makecache
 
 # Install ansible
-yum install deltarpm* libxml2-python* createrepo* ansible -y python-configparser
+yum install deltarpm* libxml2-python* createrepo* ansible python-configparser sshpass -y
 
+if [ -f '/etc/automata/mdp/mdp-all-in-one' ]
 # Setup ssh connections
-python ./tools/scripts/get_hosts.py | while read host; do
-    ./tools/scripts/ssh_withoutpw.sh $host $pwd
+python ${AUTOMATA_HOME}/tools/scripts/get_hosts.py | while read host; do
+    ${AUTOMATA_HOME}/tools/scripts/ssh_withoutpw.sh $host $pwd
 done

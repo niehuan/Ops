@@ -21,7 +21,7 @@
   setup:
 
 - name: Waiting MySql ready
-  shell: while [[ ! $(docker ps --format {{ "{{" }}.Status{{ "}}" }}) =~ ^Up.* ]]; do sleep 3s; done
+  shell: while [[ ! $(mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} -e 'show databases;') =~ .*Database.* ]]; do sleep 5s; done
   when:
     - inventory_hostname in groups['mdp_node']
 

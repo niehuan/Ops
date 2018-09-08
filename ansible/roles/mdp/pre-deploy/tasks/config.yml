@@ -42,19 +42,19 @@
         - name: update collect-agent configs
           template:
             src: "collect-agent/bootstrap-prod.yml.j2"
-            dest: "{{ mdp_config_directory }}/collect-agent/bootstrap-{{ spring_active }}.yml"
+            dest: "/etc/collect-agent/bootstrap-{{ spring_active }}.yml"
           when:
             - inventory_hostname in groups["mdp_node"]
         - name: update collect-agent configs
           template:
             src: "collect-agent/bootstrap.yml.j2"
-            dest: "{{ mdp_config_directory }}/collect-agent/bootstrap.yml"
+            dest: "/etc/collect-agent/bootstrap.yml"
           when:
             - inventory_hostname in groups["mdp_node"]
         - name: copy log4j2 configs
           template:
             src: "collect-agent/log4j2.xml"
-            dest: "{{ mdp_config_directory }}/collect-agent/log4j2.xml"
+            dest: "/etc/collect-agent/log4j2.xml"
           when:
             - inventory_hostname in groups["mdp_node"]
 

@@ -11,7 +11,7 @@ elasticsearch_data_path:
 enable_yum: true
 # yum源压缩包解压缩后，yam源的绝对路径，这个路径是只包含rpm包的路径
 yum_repo_dir: /data/mdp163/repolist/repo
-yum_always_up: true
+yum_always_up: false
 
 # 放所有gem依赖包的目录
 ruby_gems_dir: /data/mdp163/repolist/gem
@@ -23,26 +23,3 @@ mdp_config_directory: /data/conf
 
 mysql_backup_dir: /data/mysql/mysqlbackup
 mysql_container_volume_dir: /data/mysql/data
-
-############################
-# MDP SERVICE CONFIGURATIONS
-############################
-
-# CONSUL IP, DEFAULT PORT: 8500, HOSTNAME, NODEREPORT PORT: 3333
-consul_host: 127.0.0.1
-consul_nodename: 127.0.0.1
-
-# gateway default port: 9995, and ES cluster node ip 
-gateway_host: 127.0.0.1 
-
-# rbac default port: 8867
-rbac_host: 127.0.0.1
-
-# scheduler default port: 8889
-scheduler_host: 127.0.0.1
-
-# executors default port: 7010
-executors_host: 127.0.0.1
-
-# summer default port: 8081
-summer_host: 127.0.0.1
