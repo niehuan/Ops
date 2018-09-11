@@ -17,5 +17,5 @@
     state: stopped
   become: true
   when:
-    - (inventory_hostname not in groups['mdp_node']) or
-      groups['mdp']|length == 1
+    - inventory_hostname in groups['collect_agent']
+

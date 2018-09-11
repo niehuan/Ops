@@ -16,6 +16,9 @@ data_node
 [zookeeper:children]
 data_node
 
+[collect_agent:children]
+data_node
+
 [elasticsearch_master]
 
 [elasticsearch_data]
@@ -53,3 +56,4 @@ data_node
 mdp_node
 mysql
 mysql_backup_host
+collect_agent

@@ -4,8 +4,7 @@
     name: collect-agent
     state: latest
   when:
-    - (inventory_hostname not in groups['mdp_node']) or
-      groups['mdp']|length == 1
+    - inventory_hostname in groups['collect_agent']
 
 - name: Start collect-agent service
   systemd:
@@ -14,5 +13,4 @@
     daemon_reload: yes
   become: true
   when:
-    - (inventory_hostname not in groups['mdp_node']) or
-      groups['mdp']|length == 1
+    - inventory_hostname in groups['collect_agent']

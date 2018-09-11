@@ -15,6 +15,10 @@
 10.255.8.118
 10.255.8.56
 
+[collect_agent]
+10.255.8.118
+10.255.8.56
+
 [mysql_backup_host]
 10.255.8.119
 
@@ -63,3 +67,4 @@ data_node
 mdp_node
 mysql
 mysql_backup_host
+collect_agent
