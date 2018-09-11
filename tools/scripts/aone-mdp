@@ -26,6 +26,7 @@ Options:
     --hosts, -i <ansible_hosts_file_path>       Specify path to ansible host file
     --version, -v <mdp_version>                 Specify mdp version to install (default 1.6.2)
     --config, -c <customed_config_file_path>    MDP customed config file path (yaml file path)
+    --multinode, -m                             Use /etc/automata/mdp/mdp-multinode as inventory
     --debug, -d                                 Debug with ansible
 EOUSE
 }
@@ -50,6 +51,10 @@ case "$1" in
     (--version|-v)
         VERSION="$2"
         shift 2
+        ;;
+    (--multinode|-m)
+        INVENTORY="/etc/automata/mdp/mdp-multinode"
+        shift 1
         ;;
     (--debug|-d)
         DEBUG="-vvvv"
