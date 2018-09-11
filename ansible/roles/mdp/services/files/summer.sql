@@ -1,24 +1,3 @@
-CREATE TABLE IF NOT EXISTS `system_config` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `config_value` varchar(255) NOT NULL,
-  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `description` varchar(255) DEFAULT NULL,
-  `modify_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `system_config` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_1uxdod1n487ad5ruvo11a4tjx` (`system_config`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `sensitive_word_rule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modify_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `name` varchar(255) NOT NULL,
-  `regular_expression` varchar(255) DEFAULT NULL,
-  `sensitive_rule` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
-
 /*增加敏感词设置配置*/
 INSERT INTO `summer`.`system_config` (`id`, `config_value`, `description`,  `system_config`)
 VALUES (1, 'true', NULL,  'sensitiveWord.switch');

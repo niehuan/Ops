@@ -21,8 +21,7 @@
     name: "nginx"
     state: present
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true) and
+    - ruby_enabled|default(true) and
       inventory_hostname in groups["gems_server"]
 
 - name: create nginx config file for gem
@@ -31,8 +30,7 @@
     path: /etc/nginx/conf.d/gem.conf
     state: touch
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true) and
+    - ruby_enabled|default(true) and
       inventory_hostname in groups["gems_server"]
 
 - name: configure nginx for gem
@@ -47,8 +45,7 @@
             autoindex    on;
       }
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true)
+    - ruby_enabled|default(true)
     - inventory_hostname in groups["gems_server"]
 
 - name: reload nginx on gems_server
@@ -57,8 +54,7 @@
     name: nginx
     state: restarted
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true)
+    - ruby_enabled|default(true)
     - inventory_hostname in groups["gems_server"]
 
 - name: ensure tmp gems dir exists
@@ -66,8 +62,7 @@
     path: "{{ ruby_gems_dir_remote }}"
     state: directory
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true)
+    - ruby_enabled|default(true)
 
 - name: prepare gems
   get_url:
@@ -75,21 +70,18 @@
     dest: "{{ ruby_gems_dir_remote }}/{{ item }}"
   with_items: "{{ ruby_gems_list }}"
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true)
+    - ruby_enabled|default(true)
 
 - name: install gems
   with_items: "{{ ruby_gems_list }}"
   shell: gem install --force --local {{ ruby_gems_dir_remote }}/{{ item }}
   become: true
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true)
+    - ruby_enabled|default(true)
 
 - name: clean gems
   file:
     path: "{{ ruby_gems_dir_remote }}"
     state: absent
   when:
-    - gem_dir_exists.stat.exists and
-      ruby_enabled|default(true)
+    - ruby_enabled|default(true)

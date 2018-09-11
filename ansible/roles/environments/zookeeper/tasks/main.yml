@@ -1,1 +1,6 @@
+- name: Check zookeeper node count
+  fail:
+    msg: "ZOOKEEPER NODE COUNT MUST BE AN ODD NUMBER"
+  when: (groups['zookeeper']|length) % 2 == 0
+
 - include_tasks: "{{ action }}.yml"

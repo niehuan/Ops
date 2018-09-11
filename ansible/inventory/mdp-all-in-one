@@ -1,5 +1,5 @@
 [mdp_node]
-10.255.8.214
+10.255.8.119
 
 [data_node:children]
 mdp_node
@@ -16,6 +16,12 @@ data_node
 [zookeeper:children]
 data_node
 
+[elasticsearch_master]
+
+[elasticsearch_data]
+
+[elasticsearch_client]
+
 [elasticsearch:children]
 data_node
 
@@ -29,7 +35,10 @@ repo_server
 repo_server
 
 [mysql:children]
-data_node
+mdp_node
+
+[mysql_backup_host:children]
+mdp_node
 
 [mdp:children]
 yum_repo_server
@@ -38,8 +47,9 @@ repo_server
 elasticsearch
 zookeeper
 kafka
-mysql
 master_node
 client_node
 data_node
 mdp_node
+mysql
+mysql_backup_host

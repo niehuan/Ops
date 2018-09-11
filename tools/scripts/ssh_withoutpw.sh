@@ -11,4 +11,4 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 ssh-keygen -t rsa -P '' -f /root/.ssh/id_rsa 
 fi
 
-sshpass -e ssh-copy-id -f -i ~/.ssh/id_rsa root@$1
+sshpass -e ssh-copy-id -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@$1 -f

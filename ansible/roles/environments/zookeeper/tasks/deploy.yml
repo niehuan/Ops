@@ -2,11 +2,21 @@
   yum:
     name: "{{ zookeeper_package_name }}"
     state: latest
+  become: true
   when:
     - inventory_hostname in groups['zookeeper']
     - zookeeper_enabled | bool
 
 - include_tasks: config.yml
+
+- name: Ensure zookeeper pid path exists
+  file:
+    path: /etc/some_directory
+    state: directory
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
 
 - name: Start zookeeper-server
   service:

@@ -1,6 +1,6 @@
 ---
 - name: init yum server
-  when: enable_yum|default(true)
+  when: yum_enabled|default(true)
   block:
     - name: check if yum repo directory exists
       register: yum_repo_exists
@@ -16,7 +16,7 @@
       with_items: "{{ yum_repo_dependencies }}"
       when:
         - inventory_hostname in groups["yum_repo_server"]
-        - enable_yum|default(true) and yum_repo_exists.stat.exists
+        - yum_enabled|default(true)
 
     - name: setup nginx
       block:
@@ -26,12 +26,12 @@
             state: touch
           when:
             - inventory_hostname in groups["yum_repo_server"]
-            - enable_yum|default(true) and yum_repo_exists.stat.exists
+            - yum_enabled|default(true)
           become: true          
         - name: configure nginx for yum
           when:
             - inventory_hostname in groups["yum_repo_server"]
-            - enable_yum|default(true) and yum_repo_exists.stat.exists
+            - yum_enabled|default(true)
           become: true
           blockinfile:
             path: /etc/nginx/conf.d/repo.conf
@@ -50,14 +50,14 @@
           become: true
           when:
             - inventory_hostname in groups["yum_repo_server"]
-            - enable_yum|default(true) and yum_repo_exists.stat.exists
+            - yum_enabled|default(true)
           service:
             name: nginx
             state: restarted
     - name: init yum repo
       when:
         - inventory_hostname in groups["yum_repo_server"]
-        - enable_yum|default(true) and yum_repo_exists.stat.exists
+        - yum_enabled|default(true)
       shell: createrepo --workers 20 {{ yum_repo_dir }}
 
 - name: clean yum repo configurations
@@ -66,7 +66,7 @@
     path: /etc/yum.repos.d
   become: true
   when:
-    - enable_yum|default(true)
+    - yum_enabled|default(true)
 
 - name: create repo dir
   file:
@@ -74,7 +74,7 @@
     path: /etc/yum.repos.d/
   become: true
   when:
-    - enable_yum|default(true)
+    - yum_enabled|default(true)
 
 - name: create mdp repo file
   yum_repository:
@@ -86,7 +86,7 @@
     priority: 1
   become: true
   when:
-    - enable_yum|default(true)
+    - yum_enabled|default(true)
 
 - name: update yum cache
   shell: |
@@ -94,4 +94,4 @@
     yum makecache
   become: true
   when:
-    - enable_yum|default(true)
+    - yum_enabled|default(true)

@@ -4,7 +4,6 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile=/var/run/zookeeper/zookeeper_server.pid
 ExecStart=/usr/bin/zookeeper-server start
 ExecReload=/usr/bin/zookeeper-server restart
 ExecStop=/usr/bin/zookeeper-server stop

@@ -45,7 +45,6 @@ yum makecache
 # Install ansible
 yum install deltarpm* libxml2-python* createrepo* ansible python-configparser sshpass -y
 
-if [ -f '/etc/automata/mdp/mdp-all-in-one' ]
 # Setup ssh connections
 python ${AUTOMATA_HOME}/tools/scripts/get_hosts.py | while read host; do
     ${AUTOMATA_HOME}/tools/scripts/ssh_withoutpw.sh $host $pwd

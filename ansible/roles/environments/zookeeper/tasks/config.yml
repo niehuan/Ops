@@ -4,10 +4,22 @@
 
 - name: Ensuring config directories exist
   file:
-    path: "/etc/zookeeper/conf/"
+    path: "{{ item }}"
     state: directory
-    mode: 0770
+    mode: a+x
     recurse: yes
+  with_items:
+    - "/etc/zookeeper/conf/"
+    - "{{ zookeeper_data_dir }}"
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
+
+- name: Ensure zookeeper pid file exists
+  file:
+    path: "{{ zookeeper_data_dir }}/zookeeper_server.pid"
+    state: touch
   become: true
   when:
     - inventory_hostname in groups['zookeeper']
@@ -17,7 +29,17 @@
   template:
     src: "zookeeper.cfg.j2"
     dest: "/etc/zookeeper/conf/zoo.cfg"
-    mode: "0600"
+    mode: a+x
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool
+
+- name: Setup zookeeper environment config
+  template:
+    src: "zookeeper-env.sh.j2"
+    dest: "/etc/zookeeper/conf/zookeeper-env.sh"
+    mode: a+x
   become: true
   when:
     - inventory_hostname in groups['zookeeper']
@@ -26,16 +48,16 @@
 - name: Configure zookeeper instance id
   template:
     src: "myid.j2"
-    dest: "/etc/zookeeper/conf/myid"
-    mode: "0600"
+    dest: "{{ zookeeper_data_dir }}/myid"
+    mode: a+x
   become: true
   when:
     - inventory_hostname in groups['zookeeper']
     - zookeeper_enabled | bool
 
 - name: Config zookeeper systemd
-  copy:
-    src: "zookeeper-server.service"
+  template:
+    src: "zookeeper-server.service.j2"
     dest: "/usr/lib/systemd/system/zookeeper-server.service"
   become: true
   when:

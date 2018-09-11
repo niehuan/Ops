@@ -72,7 +72,7 @@ discovery.zen.ping.unicast.hosts: [{% for host in groups['elasticsearch'] %}"{{ 
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
 #
-discovery.zen.minimum_master_nodes: 1
+discovery.zen.minimum_master_nodes: {{ (groups['elasticsearch_master'] | length) * 0.5 | round(0, 'floor') | int }}
 #
 # For more information, consult the zen discovery module documentation.
 #
@@ -105,3 +105,16 @@ script.max_compilations_per_minute: 10000
 #indices.breaker.total.limit: 30%
 #indices.breaker.request.limit: 6%
 #indices.breake
+
+{% if groups['elasticsearch']|length > 1 %}
+{% if inventory_hostname in groups['master_node'] %}
+node.master: true
+node.data: false
+{% elif inventory_hostname in groups['elasticsearch_data'] %}
+node.master: false
+node.data: true
+{% elif inventory_hostname in groups['elasticsearch_client'] %}
+node.master: false
+node.data: false
+{% endif %}
+{% endif %}

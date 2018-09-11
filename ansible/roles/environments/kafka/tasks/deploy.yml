@@ -1,3 +1,12 @@
+- name: Create kafka pid file path
+  file:
+    path: /var/run/kafka/
+    state: directory
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool
+
 - name: Install kafka
   become: true
   yum:
@@ -8,6 +17,15 @@
     - kafka_enabled | bool
 
 - include_tasks: config.yml
+
+- name: Create kafka pid file
+  file:
+    path: /var/run/kafka/kafka.pid
+    state: touch
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool
 
 - name: Start kafka
   service:

@@ -1,25 +1,23 @@
 cluster_common_password: Aone.ai2018!
 
 elasticsearch_cluster_name: mdp
-elasticsearch_heap_size: 4g
+elasticsearch_heap_size: 2g
 elasticsearch_data_path:
   - /data/elasticsearch/data
   - /data/es/data
 
-
-# 是否使用自定义的yum源
-enable_yum: true
 # yum源压缩包解压缩后，yam源的绝对路径，这个路径是只包含rpm包的路径
-yum_repo_dir: /data/mdp163/repolist/repo
-yum_always_up: false
+yum_repo_dir: /opt/data/repo
 
 # 放所有gem依赖包的目录
-ruby_gems_dir: /data/mdp163/repolist/gem
+ruby_gems_dir: /opt/data/mdp162/gem
 
 # docker_compose文件位置
-docker_compose_dir: /data/mdp162/docker-compose
-mdp_docker_images_dir: /data/mdp162/mdp-docker-images.tgz
+docker_compose_dir: /opt/data/mdp162/docker-compose
+mdp_docker_images_dir: /data/mdp-docker-images.tgz
 mdp_config_directory: /data/conf
 
 mysql_backup_dir: /data/mysql/mysqlbackup
 mysql_container_volume_dir: /data/mysql/data
+
+kafka_heap_size: 2g
