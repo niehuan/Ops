@@ -52,6 +52,35 @@ spec文件内容参考：
 - https://fedoraproject.org/wiki/Packaging:RPMMacros
 - https://rpm-packaging-guide.github.io/
 
+zookeeper和kafaka是hdp 2.5.3.0_37的包。zookeeper-server的依赖包里包含的redhat-lbs*包数量过多，而且在部署过程中完全没有安装的必要，因此使用rpmspecs项目内自定义的redhat-lsb.spec打空包。
+
+实施部署时automata项目依赖的rpm包：
+  -  automata
+  -  collect-agent
+  -  zookeeper
+  -  elasticsearch
+  -  kafka
+  -  ranger_2_5_3_0_37-kafka-plugin
+  -  hdp-select
+  -  nginx
+  -  jq
+  -  python-crypto
+  -  python-paramiko
+  -  python2-jmespath
+  -  python-setuptools
+  -  python-httplib2
+  -  sshpass
+  -  python-keyczar
+  -  python-six
+  -  python-configparser
+
+
+# 关于nginx
+
+nginx是在开始启动，支持了yum源和gem源的安装，在启动docker前要关闭独立的nginx。
+
+另外如果已经有容器在运行中，需要先停止容器，再重新部署mdp。（fe容器里有nginx服务）
+
 # debug:
 
 ansible-playbook 的 debug 方式是在ansible-playbook命令后加 -vvvv。
