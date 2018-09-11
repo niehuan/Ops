@@ -34,7 +34,14 @@
   when:
     - inventory_hostname in groups['mdp_node']
 
-- include_tasks: "start.yml"
+- name: Ensure nginx server running on deploy host
+  systemd:
+    state: running
+    name: nginx
+  ignore_errors: true
+  become: true
+  when:
+    - inventory_hostname in groups['yum_repo_server']
 
 - name: Ensure jq tool installed
   yum:
@@ -43,6 +50,18 @@
   become: true
   when:
     - inventory_hostname in groups['mdp_node']
+
+- name: Stop nginx server on deploy host
+  systemd:
+    state: stopped
+    name: nginx
+  ignore_errors: true
+  become: true
+  when:
+    - (inventory_hostname in groups['mdp_node']) and
+      (inventory_hostname in groups['yum_repo_server'])
+
+- include_tasks: "start.yml"
 
 - name: Check service status
   shell: curl -s http://{{ groups['mdp_node'][0] }}:{{ consul_port|default(8500) }}/v1/health/state/passing | jq .[].ServiceName | wc -l

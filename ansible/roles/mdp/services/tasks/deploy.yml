@@ -23,16 +23,6 @@
   when:
     - inventory_hostname in groups['mdp_node']
 
-- name: Stop nginx server on deploy host
-  systemd:
-    state: stopped
-    name: nginx
-  ignore_errors: true
-  become: true
-  when:
-    - (inventory_hostname in groups['mdp_node']) and
-      (inventory_hostname in groups['yum_repo_server'])
-
 - name: Load docker images
   shell: docker load < {{ mdp_docker_images_dir }}
   become: true

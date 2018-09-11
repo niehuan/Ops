@@ -22,11 +22,14 @@
 [mysql_backup_host]
 10.255.8.119
 
-[elasticsearch_master]
+[elasticsearch]
 10.255.8.119
+10.255.8.118
+10.255.8.56
+
+[elasticsearch_master]
 
 [elasticsearch_data]
-10.255.8.118
 
 [elasticsearch_client]
 
@@ -44,11 +47,6 @@ repo_server
 
 [yum_repo_server:children]
 repo_server
-
-[elasticsearch:children]
-elasticsearch_client
-elasticsearch_data
-elasticsearch_master
 
 [mysql:children]
 mdp_node

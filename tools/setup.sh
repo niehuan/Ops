@@ -43,7 +43,7 @@ yum clean all
 yum makecache
 
 # Install ansible
-yum install deltarpm* libxml2-python* createrepo* ansible python-configparser sshpass -y
+yum install deltarpm* libxml2-python* createrepo* ansible python-configparser jq sshpass -y
 
 # Setup ssh connections
 python ${AUTOMATA_HOME}/tools/scripts/get_hosts.py | while read host; do

@@ -107,7 +107,7 @@ script.max_compilations_per_minute: 10000
 #indices.breake
 
 {% if groups['elasticsearch']|length > 1 %}
-{% if inventory_hostname in groups['master_node'] %}
+{% if inventory_hostname in groups['elasticsearch_master'] %}
 node.master: true
 node.data: false
 {% elif inventory_hostname in groups['elasticsearch_data'] %}
@@ -116,5 +116,8 @@ node.data: true
 {% elif inventory_hostname in groups['elasticsearch_client'] %}
 node.master: false
 node.data: false
+{% else %}
+node.master: true
+node.data: true
 {% endif %}
 {% endif %}
