@@ -36,13 +36,15 @@ automata 的 mdp 1.6.2分支提供了一个封装好的 aone-mdp 命令（脚本
 版本发布时需要关注：
  1. 各个mdp服务的配置文件是否有修改，如果修改需要在```automata/ansible/roles/mdp/pre-deploy/templates```对应的服务目录下修改文件
  2. sql脚本是否有修改，如果有修改要更新```automata/ansible/roles/mdp/services/files```目录下的对应文件
- 3. 新版本要checkout新分支，分支命名方式是```${PRODUCT_NAME}_${VERSION_NUMBER}```
+ 3. 新版本要checkout新分支，分支命名方式是```${PRODUCT_NAME}_${VERSION_NUMBER}```，使用branch名作为打rpm包时的version信息。
 
 automata根据git分支管理不同产品不通版本的部署工具内容。
 
 用来打automata rpm包的spec文件在dev-ops/rpmspecs项目内维护。
 
 rpmspecs只维护master版本，在rpmspecs/automata内对应版本的包维护一个automata-${branch}.spec。(TODO)
+
+automata包的版本号在git上的spec文件里不做修改，每次打包根据branch信息替换掉Version段内容后使用替换的spec文件打包。
 
 mdp_1.6.2版本依赖collect_agent rpm包，collect-agent打包已经更新到jenkins上，在版本发布时需要更新git上的rpmspec/collect-agent/SOURCES里的脚本后用jenkins打rpm包。
 
