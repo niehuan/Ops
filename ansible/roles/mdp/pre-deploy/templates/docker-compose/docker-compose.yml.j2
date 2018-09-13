@@ -1,5 +1,12 @@
 version: '3'
 services:
+  mysql:
+    container_name: mysql-5.7
+    environment: {MYSQL_ROOT_PASSWORD: Collect%2017}
+    image: harbor.dev.aone.ai/aone/mysql:5.7
+    network_mode: host
+    restart: always
+    volumes: ['{{ mysql_container_volume_dir }}:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '{{ mdp_config_directory }}/mysql/my.cnf:/etc/mysql/my.cnf']
   consul:
     command: agent -server -bootstrap-expect=1 -ui
     container_name: consul-1.2.2
@@ -54,13 +61,6 @@ services:
     volumes: ['{{ mdp_config_directory }}/gateway/bootstrap.yml:/bootstrap.yml', '{{ mdp_config_directory }}/gateway/log4j2.xml:/log4j2.xml',
       '{{ mdp_config_directory }}/gateway/bootstrap-sw.yml:/bootstrap-sw.yml', '/etc/localtime:/etc/localtime:ro',
       '{{ container_logs_directory }}:/logs']
-  mysql:
-    container_name: mysql-5.7
-    environment: {MYSQL_ROOT_PASSWORD: Collect%2017}
-    image: harbor.dev.aone.ai/aone/mysql:5.7
-    network_mode: host
-    restart: always
-    volumes: ['{{ mysql_container_volume_dir }}:/var/lib/mysql', '/etc/localtime:/etc/localtime:ro', '{{ mdp_config_directory }}/mysql/my.cnf:/etc/mysql/my.cnf']
   nodereport:
     container_name: nodereport-{{ version }}
     image: harbor.dev.aone.ai/aone/nodereport:{{ version }}-qa

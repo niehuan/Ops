@@ -2,8 +2,11 @@
 
 #备份主机
 hostip=$1
-echo $hostip
-exit 1
+
+if [ -z $hostip ]; then
+  exit 1
+fi
+
 #保存备份个数，备份31天数据
 number=31
 #备份保存路径
@@ -45,5 +48,5 @@ then
   #删除最早生成的备份，只保留number数量的备份
   rm $delfile
   #写删除文件日志
-  echo "delete $delfile" >> $backup_dir/log.txt
+  echo "delete $delfile" >> $backup_dir/mysql_backup.log
 fi

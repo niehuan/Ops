@@ -1,0 +1,9 @@
+- name: Start MySql container
+  shell: docker-compose -f {{ mdp_config_directory }}/docker-compose.yml up -d mysql
+  when:
+    - inventory_hostname in groups['mysql']
+
+- name: Waiting MySql ready
+  shell: while [[ ! $(mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} -e 'show databases;') =~ .*Database.* ]]; do sleep 5s; done
+  when:
+    - inventory_hostname in groups['mysql']

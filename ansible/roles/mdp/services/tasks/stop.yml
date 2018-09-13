@@ -1,3 +1,12 @@
+- name: Ensure docker daemon running
+  systemd:
+    name: docker
+    state: started
+  become: true
+  ignore_errors: yes
+  when:
+    - inventory_hostname in groups['mdp_node']
+
 - name: Get running containers
   register: running_containers
   command: docker ps --format "{{ "{{" }}.Names{{ "}}" }}"

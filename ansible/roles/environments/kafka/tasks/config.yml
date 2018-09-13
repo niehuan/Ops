@@ -1,6 +1,3 @@
-- name: Gather facts for kafka
-  setup:
-
 - name: Ensuring config directories exist
   file:
     path: "/etc/kafka/conf/"

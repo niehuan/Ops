@@ -1,7 +1,4 @@
-- name: Start MySql container
-  shell: docker-compose -f {{ mdp_config_directory }}/docker-compose.yml up -d mysql
-
-- name: Ensure tmp dir exists
+- name: Ensure sql file tmp dir exists
   file:
     path: /tmp/automata/sql
     state: directory
@@ -17,22 +14,16 @@
     - scheduler.sql
     - summer.sql
 
-- name: Collect hosts facts
-  setup:
-
-- name: Waiting MySql ready
-  shell: while [[ ! $(mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} -e 'show databases;') =~ .*Database.* ]]; do sleep 5s; done
-  when:
-    - inventory_hostname in groups['mdp_node']
+- include_tasks: "start-mysql.yml"
 
 - name: Setup MySQL databases
   shell: |
-    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} < /tmp/automata/sql/create_dip_databases.sql
-    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} node < /tmp/automata/sql/node.sql
-    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} scheduler  < /tmp/automata/sql/scheduler.sql
-    # mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} rbac  < /tmp/automata/sql/rbac.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} < /tmp/automata/sql/create_dip_databases.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} node < /tmp/automata/sql/node.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} scheduler  < /tmp/automata/sql/scheduler.sql
+    # mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} rbac  < /tmp/automata/sql/rbac.sql
   when:
-    - inventory_hostname in groups['mdp_node']
+    - inventory_hostname in groups['mysql']
 
 - name: Ensure nginx server running on deploy host
   systemd:
@@ -73,9 +64,9 @@
     - inventory_hostname in groups['mdp_node']
 
 - name: Setup Summer Database
-  shell: mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} summer < /tmp/automata/sql/summer.sql
+  shell: mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} summer < /tmp/automata/sql/summer.sql
   when:
-    - inventory_hostname in groups['mdp_node']
+    - inventory_hostname in groups['mysql']
 
 - name: Remove tmp SQL scripts
   file:
@@ -86,7 +77,7 @@
 
 - name: Waiting rbac service ready
   uri:
-    url: http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:9999/actuator/info
+    url: http://{{ inventory_hostname }}:9999/actuator/info
     status_code: 200
   retries: 6
   delay: 10
@@ -95,7 +86,7 @@
 
 - name: Initialize Rbac
   uri:
-    url: http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:{{ rbac_port|default("8867") }}/rbac/system/addInitData
+    url: http://{{ inventory_hostname }}:{{ rbac_port|default("8867") }}/rbac/system/addInitData
     method: GET
     headers:
       accept: "application/json"
@@ -104,7 +95,7 @@
 
 - name: Waiting galaxy service ready
   uri:
-    url: http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:{{ galaxy_port|default("9999") }}/actuator/info
+    url: http://{{ inventory_hostname }}:{{ galaxy_port|default("9999") }}/actuator/info
     status_code: 200
   retries: 6
   delay: 10
@@ -113,7 +104,7 @@
 
 - name: Initialize Galaxy
   uri:
-    url: http://{{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }}:{{ galaxy_port|default("9999") }}/collectd/system/addInitData
+    url: http://{{ inventory_hostname }}:{{ galaxy_port|default("9999") }}/collectd/system/addInitData
     method: GET
     headers:
       accept: "*/*"
