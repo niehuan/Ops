@@ -25,4 +25,4 @@
     user: root
     job: "/etc/cron.daily/mysql_backup.sh {{ groups['mysql'][0] }}"
     minute: "0"
-    hour: "3"
+    hour: "{{ mysql_backup_hour }}"

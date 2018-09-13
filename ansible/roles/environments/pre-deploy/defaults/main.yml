@@ -65,3 +65,4 @@ dns_servers:
   - 8.8.8.8
 
 cluster_common_password: password
+mysql_backup_hour: 3

@@ -60,6 +60,15 @@ case "$1" in
         DEBUG="-vvvv"
         shift 1
         ;;
+    (--restart|-r)
+        sh /usr/share/automata/tools/scripts/script.sh $2
+        # /usr/share/automata/
+        # docker-asdfasdf 
+        # docker
+        # elasticsearch kafka zookeeper-server collect-agent sshd
+        # ansible $2 -i $INVENTORY  -m "shell" -a "systemctl restart $2" # TODO
+        exit 0
+        ;;
     (--help|-h)
         usage
         shift
