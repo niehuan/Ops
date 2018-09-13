@@ -1,0 +1,34 @@
+- name: Stop nginx
+  systemd:
+    name: nginx
+    state: stopped
+  become: true
+  ignore_errors: yes
+  when:
+    - inventory_hostname in groups['repo_server']
+
+- name: Start collect-agent
+  systemd:
+    name: collect-agent
+    state: started
+  become: true
+  ignore_errors: yes
+  when:
+    - inventory_hostname in groups['collect_agent']
+
+- name: Ensure docker daemon running
+  systemd:
+    name: docker
+    state: started
+  become: true
+  ignore_errors: yes
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- include_tasks: "start-mysql.yml"
+
+- name: Start docker containers
+  shell: docker-compose  -f {{ mdp_config_directory }}/docker-compose.yml up --no-recreate -d
+  become: true
+  when:
+    - inventory_hostname in groups['mdp_node']

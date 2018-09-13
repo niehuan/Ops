@@ -1,0 +1,26 @@
+- name: install docker dependencies
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - yum-utils
+    - lvm2
+    - device-mapper-persistent-data
+    - docker-ce
+  when:
+    - inventory_hostname in groups["mdp_node"]
+
+- name: init docker-compose
+  copy:
+    src: "{{ docker_compose_dir }}"
+    dest: /usr/bin/docker-compose
+    mode: u+x
+  when:
+    - inventory_hostname in groups["mdp_node"]
+
+- name: start docker service
+  service:
+    name: docker
+    state: started
+  when:
+    - inventory_hostname in groups["mdp_node"]

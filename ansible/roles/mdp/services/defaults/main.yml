@@ -1,0 +1,18 @@
+mdp_docker_images_dir: /data/mdp-docker-images.tgz
+mdp_config_directory: /data/conf
+
+mysql_username: root
+mysql_password: Collect%2017
+
+container_names:
+  - consul-1.2.2
+  - mysql-5.7
+  - galaxy-{{ version }}
+  - gateway-{{ version }}
+  - es-sql-engine-{{ version }}
+  - executors-{{ version }}
+  - fe-mdp-{{ version }}
+  - nodereport-{{ version }}
+  - rbac-{{ version }}
+  - scheduler-{{ version }}
+  - summer-{{ version }}

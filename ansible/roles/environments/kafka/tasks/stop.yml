@@ -1,0 +1,8 @@
+- name: Stop kafka
+  service:
+    name: "kafka"
+    state: stopped
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool

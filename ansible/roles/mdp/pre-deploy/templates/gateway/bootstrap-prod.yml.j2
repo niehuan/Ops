@@ -1,0 +1,170 @@
+server:
+  port: {{ gateway_port }}
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/xml,application/json
+spring:
+  application:
+    name: aone-gateway
+  data.elasticsearch:
+    cluster-nodes: "{% for esnode in elasticsearch_host %}{{ esnode }}:{{ es_port }}{% if not loop.last %},{% endif %}{% if loop.last %}"
+{% endif %}{% endfor %}
+    properties:
+      "client.transport.ignore_cluster_name": true
+      "client.transport.nodes_sampler_interval": "5s"
+      "client.transport.ping_timeout": "5s"
+  # consul 配置
+  cloud:
+    consul:
+      # consul服务器地址
+      host: {{ consul_host  }}
+      # consul服务端口
+      port: {{ consul_port }}
+      config:
+        # enabled为true表示启用配置管理功能
+        enabled: true
+        # watch选项为配置监视功能，主要监视配置的改变
+        watch:
+          enabled: true
+          delay: 10000
+          wait-time: 30
+        # 表示如果没有发现配置，是否抛出异常，true为是，false为否，当为false时，consul会打印warn级别的日志信息
+        fail-fast: false
+        # 表示使用的配置格式
+        format: key_value
+        # 配置所在的应用目录名称
+        name: ${spring.application.name}
+      # 服务发现配置
+      discovery:
+        # 启用服务发现
+        enabled: true
+        # 启用服务注册
+        register: true
+        # 表示注册时使用IP而不是hostname
+        prefer-ip-address: true
+        # 执行监控检查的频率
+        health-check-interval: 30s
+        # 设置健康检查失败多长时间后，取消注册
+        health-check-critical-timeout: 30m
+        # 健康检查的路径
+        health-check-path: /actuator/info
+        # 服务注册标识，格式为：应用名称+服务器IP+端口
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+management:
+  context-path: /actuator
+  security:
+    enabled: false
+endpoints:
+  actuator:
+    enabled: true
+    sensitive: true
+  logfile:
+    enabled: true
+
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://local-3:9994/eureka/
+#  instance:
+#    hostname: com.aone.ai.gateway
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 600000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 300000
+
+zuul:
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 300000
+  sensitiveHeaders: Cookie,Set-Cookie
+  ignoredPatterns: /api/**
+  routes:
+    collectdRoute:
+      path: /collectd/**
+      serviceId: aone-galaxy
+
+    reportRoute:
+      path: /node/**
+      serviceId: aone-report
+
+    analyseRoute:
+      path: /analyse/**
+      serviceId: aone-galaxy
+    alertRoute:
+      path: /alert/**
+      serviceId: aone-galaxy
+    aone-metaRoute:
+      path: /meta/**
+      serviceId: aone-meta
+    sqlEngineRoute:
+      path: /sql/**
+      serviceId: es-sql-engine
+    aplEngineRoute:
+      path: /apl/**
+      serviceId: es-sql-engine
+    rbacRoute:
+      path: /rbac/**
+      serviceId: aone-rbac
+    schedulerRoute:
+      path: /scheduler/**
+      serviceId: aone-scheduler
+    mlRoute:
+      path: /ml/**
+      serviceId: archmage
+
+switch:
+  sensitivity: false
+  searchHistoryFilter: true
+  sensitiveWordFilter: true
+
+dataset.enabled: false
+
+dip:
+  logs:
+    - "/aone-rbac/rbac/auth/login,登录日志,登录,POST"
+    - "/aone-rbac/rbac/user/addUser,用户日志,新增用户,POST"
+    - "/aone-rbac/rbac/user/editUserWithGroupIdAndWithRoleIdsByUserId,用户日志,编辑用户,PUT"
+    - "/aone-rbac/rbac/user/delUserByUserId,用户日志,删除用户,DELETE"
+
+    - "/aone-meta/meta/dashboard/addDashboard,仪表板日志,新建仪表板,POST"
+    - "/aone-meta/meta/dashboard/editDashboardByID,仪表板日志,编辑仪表板,PUT"
+    - "/aone-meta/meta/dashboard/delDashboardByID,仪表板日志,删除仪表板,DELETE"
+
+    - "/api/ds/addFlow,数据源,新建数据源,POST"
+    - "/aone-galaxy/collectd/flows/editFlowById,数据源,更新数据源,PUT"
+    - "/api/ds/delFlowById,数据源,删除数据源,POST"
+
+    - "/aone-galaxy/collectd/nodes/addNodes,agent日志,注册agent,POST"
+    - "/aone-galaxy/collectd/nodes/delNodeById,agent日志,删除agent,DELETE"
+
+    - "/aone-galaxy/analyse/getSearch,实时搜索,搜索,POST"
+    - "/aone-galaxy/analyse/getAggregation,可视化,搜索,POST"
+
+  #  not checking for token
+  filter:
+    - "/aone-rbac/rbac/auth/login,POST"
+    - "/aone-rbac/rbac/user/me,GET"
+    - "/es-sql-engine/apl/query,POST"
+    - "/aone-galaxy/analyse/getSearch,POST"
+    - "/aone-galaxy/analyse/getAggregation, POST"
+    - "/aone-galaxy/collectd/flows/exportExtractorsByFlowId,GET"
+
+    - "/aone-rbac/rbac/user/listResourceByTokenInHeadOfRequest,GET"
+    - "/aone-rbac/rbac/user/getUserWithRolesAndGroupWithRolesAndResourcesByUserId,GET"
+    - "/aone-rbac/rbac/user/editUserByUserId,PATCH"
+    - "/aone-rbac/rbac/resource/listResource,GET"
+    # 邮件配置
+    - "/aone-scheduler/scheduler/email/getEmail,GET"
+    - "/aone-scheduler/scheduler/email/editEmail,PUT"
+    - "/aone-scheduler/scheduler/message/getMessage,GET"
+    - "/aone-scheduler/scheduler/message/editMessage,PUT"
+    - "/archmage/ml/log_reduce,POST"

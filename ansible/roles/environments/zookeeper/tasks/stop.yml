@@ -1,0 +1,8 @@
+- name: Stop zookeeper-server
+  service:
+    name: "zookeeper-server"
+    state: stopped
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | bool

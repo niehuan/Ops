@@ -1,0 +1,26 @@
+ {
+  "PORT": {{ nodereport_port }},
+  "LOG_PATH": "{{ nodereport_log_path }}",
+  "MYSQL": {
+    "HOST": "{{ mysql_host }}",
+    "USER": "{{ mysql_user }}",
+    "PWD" : "{{ mysql_pass }}",
+    "DB" : "{{ nodereport_sqldb }}"
+  },
+  "CONSUL": {
+    "CONSUL_HOST": "{{ consul_host }}",
+    "CONSUL_NODE": "{{ consul_nodename }}",
+    "CONSUL_PORT": {{ consul_port }},
+    "CONSUL_SECURE": false,
+    "NAME": "aone-report",
+    "HOST": "{{ consul_host }}",
+    "PORT": {{ nodereport_port }},
+    "CLIENT": {
+      "META": "aone-meta",
+      "GALAXY": "aone-galaxy",
+      "APL": "es-sql-engine"
+    }
+  },
+  "OUTPUT_REPORT_ROOT": "/usr/share/nginx/html/report/"
+ }
+ 

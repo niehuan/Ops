@@ -1,0 +1,12 @@
+elasticsearch_servicelasticsearch:
+  elasticsearch:
+    package_name: elasticsearch-5.4.0
+    group: elasticsearch
+
+elasticsearch_enabled: true
+elasticsearch_heap_size: 4g
+elasticsearch_cluster_name: mdp
+elasticsearch_data_path:
+  - /data1/elasticsearch/data
+  - /data2
+elasticsearch_log_path: /var/log/elasticsearch

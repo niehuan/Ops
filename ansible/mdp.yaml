@@ -1,0 +1,11 @@
+- hosts: mdp
+  gather_facts: false
+  roles:
+    - environments/pre-deploy
+    - environments/elasticsearch
+    - environments/kafka
+    - environments/zookeeper
+    - mdp/pre-deploy
+    - mdp/services
+  vars_files:
+    - "{{ variable_file }}"

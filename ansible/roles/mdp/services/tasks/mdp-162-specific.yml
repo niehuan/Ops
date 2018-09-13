@@ -1,0 +1,112 @@
+- name: Ensure sql file tmp dir exists
+  file:
+    path: /tmp/automata/sql
+    state: directory
+
+- name: Copy SQL scripts to tmp dir
+  copy:
+    src: "{{ item }}"
+    dest: "/tmp/automata/sql/{{ item }}"
+  with_items:
+    - create_dip_databases.sql
+    - node.sql
+    - rbac.sql
+    - scheduler.sql
+    - summer.sql
+
+- include_tasks: "start-mysql.yml"
+
+- name: Setup MySQL databases
+  shell: |
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} < /tmp/automata/sql/create_dip_databases.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} node < /tmp/automata/sql/node.sql
+    mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} scheduler  < /tmp/automata/sql/scheduler.sql
+    # mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} rbac  < /tmp/automata/sql/rbac.sql
+  when:
+    - inventory_hostname in groups['mysql']
+
+- name: Ensure nginx server running on deploy host
+  systemd:
+    state: running
+    name: nginx
+  ignore_errors: true
+  become: true
+  when:
+    - inventory_hostname in groups['yum_repo_server']
+
+- name: Ensure jq tool installed
+  yum:
+    name: jq
+    state: present
+  become: true
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Stop nginx server on deploy host
+  systemd:
+    state: stopped
+    name: nginx
+  ignore_errors: true
+  become: true
+  when:
+    - (inventory_hostname in groups['mdp_node']) and
+      (inventory_hostname in groups['yum_repo_server'])
+
+- include_tasks: "start.yml"
+
+- name: Check service status
+  shell: curl -s http://{{ groups['mdp_node'][0] }}:{{ consul_port|default(8500) }}/v1/health/state/passing | jq .[].ServiceName | wc -l
+  register: consul_services
+  until: consul_services.stdout|int >= 7
+  retries: 20
+  delay: 30
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Setup Summer Database
+  shell: mysql -u{{ mysql_username }} -p{{ mysql_password }} -h{{ inventory_hostname }} summer < /tmp/automata/sql/summer.sql
+  when:
+    - inventory_hostname in groups['mysql']
+
+- name: Remove tmp SQL scripts
+  file:
+    path: /tmp/automata/sql
+    state: absent
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Waiting rbac service ready
+  uri:
+    url: http://{{ inventory_hostname }}:9999/actuator/info
+    status_code: 200
+  retries: 6
+  delay: 10
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Initialize Rbac
+  uri:
+    url: http://{{ inventory_hostname }}:{{ rbac_port|default("8867") }}/rbac/system/addInitData
+    method: GET
+    headers:
+      accept: "application/json"
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Waiting galaxy service ready
+  uri:
+    url: http://{{ inventory_hostname }}:{{ galaxy_port|default("9999") }}/actuator/info
+    status_code: 200
+  retries: 6
+  delay: 10
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Initialize Galaxy
+  uri:
+    url: http://{{ inventory_hostname }}:{{ galaxy_port|default("9999") }}/collectd/system/addInitData
+    method: GET
+    headers:
+      accept: "*/*"
+  when:
+    - inventory_hostname in groups['mdp_node']

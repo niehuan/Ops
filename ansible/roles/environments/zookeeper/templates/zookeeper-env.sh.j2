@@ -1,0 +1,6 @@
+export JAVA_HOME=/usr/java/jdk1.8.0_161
+export ZOOKEEPER_HOME=-/usr/hdp/2.5.3.0-37/zookeeper
+export ZOOKEEPER_LOG_DIR={{ zookeeper_log_dir }}
+export ZOOKEEPER_PID_DIR={{ zookeeper_data_dir }}/zookeeper_server.pid
+export JAVA=$JAVA_HOME/bin/java
+CLASSPATH=$CLASSPATH:$ZOOKEEPER_HOME/*

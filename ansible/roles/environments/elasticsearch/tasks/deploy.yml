@@ -1,0 +1,52 @@
+- name: Install elasticsearch
+  become: true
+  yum:
+    name: elasticsearch
+    state: latest
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
+
+- name: Set elasticsearch data directory owner to user elasticsearch
+  file:
+    path: "{{ item }}"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: u+x
+    state: directory
+  with_items: "{{ elasticsearch_data_path }}"
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
+
+- include_tasks: config.yml
+
+- name: Copy sysconfig elasticsearch
+  copy:
+    src: "elasticsearch.sysconfig"
+    dest: "/etc/sysconfig/elasticsearch"
+    mode: "0655"
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
+
+- name: Copy elasticsearch systemd file
+  copy:
+    dest: "/usr/lib/systemd/system/elasticsearch.service"
+    src: "elasticsearch.service"
+    mode: "0655"
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
+
+- name: Restart elasticsearch
+  systemd:
+    name: "elasticsearch"
+    state: restarted
+    daemon_reload: yes
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool

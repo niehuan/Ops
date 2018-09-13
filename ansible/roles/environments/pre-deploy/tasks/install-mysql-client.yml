@@ -1,0 +1,28 @@
+- name: install mysql client
+  yum:
+    name:  mysql-community-client
+    state: latest
+
+- name: Ensure directory present
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ mysql_backup_dir }}"
+    - "/etc/cron.daily"
+
+- name: Copy mysql backup script
+  template:
+    src: mysql_backup.sh.j2
+    dest: "/etc/cron.daily/mysql_backup.sh"
+    mode: u+x
+  become: true
+
+- name: Setup cron job for mysql backup
+  cron:
+    name: "MySQL Backup"
+    state: present
+    user: root
+    job: "/etc/cron.daily/mysql_backup.sh {{ groups['mysql'][0] }}"
+    minute: "0"
+    hour: "{{ mysql_backup_hour }}"

@@ -1,0 +1,21 @@
+# elasticsearch connection properties
+{% set i = 0 %}
+{% for esnode in elasticsearch_host %}
+analyze.es.node[{{ i }}].host={{ esnode }}
+analyze.es.node[{{ i }}].port=9300
+analyze.es.node[{{ i }}].rest=9200
+{% set i = i + 1 %}
+{% endfor %}
+
+analyze.spark.master=local
+analyze.spark.appname=es sql engine
+analyze.spark.conf[0].key=spark.shuffle.memoryFraction
+analyze.spark.conf[0].value=0.5
+analyze.spark.conf[1].key=spark.shuffle.compress
+analyze.spark.conf[1].value=true
+analyze.spark.conf[2].key=spark.io.compression.codec
+analyze.spark.conf[2].value=snappy
+analyze.spark.conf[3].key=spark.yarn.executor.memoryOverhead
+analyze.spark.conf[3].value=2000M
+analyze.spark.conf[4].key=spark.sql.shuffle.partitions
+analyze.spark.conf[4].value=1

@@ -1,0 +1,17 @@
+- name: Ensure kafka pid dir exists
+  file:
+    path: /var/run/kafka
+    state: directory
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool
+
+- name: Start kafka
+  service:
+    name: "kafka"
+    state: started
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | bool

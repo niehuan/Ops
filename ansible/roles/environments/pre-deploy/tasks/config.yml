@@ -1,0 +1,132 @@
+---
+- name: Shutdown firewalld
+  block:
+    - name: disable firewalld
+      service:
+        name: firewalld
+        state: stopped
+    - name: shutdown selinux
+      selinux:
+        state: disabled
+  become: true
+
+- name: Shutdown swap
+  command: swapoff -a
+
+- name: Disable ipv6
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.conf
+    reload: yes
+  with_items:
+    - {"key": "net.ipv6.conf.all.disable_ipv6", "value": 1}
+    - {"key": "net.ipv6.conf.default.disable_ipv6", "value": 1}
+    - {"key": "net.ipv6.conf.eth0.disable_ipv6", "value": 1}
+    - {"key": "vm.max_map_count", "value": 262144}
+
+- name: Update ulimit
+  blockinfile:
+    block: |
+      * soft nproc 4096 
+      root soft nproc unlimited 
+    path: /etc/security/limits.d/20-nproc.conf
+
+- name: Configure bashrc
+  block:
+    - name: set bashrc
+      # notice: bashrc functions are appended to current user's bashrc file
+      blockinfile:
+        path: ~/.bashrc
+        block: |
+          export PS1="[\[\033[0;32m\]\u\[\033[0;32m\]@\[\033[0;34m\]$(hostname | awk -F- '{print $1}')-\[\033[0;31m\]$(hostname | awk -F- '{print $2}')\[\033[0;34m\].$(hostname -d | awk -F. '{print $1}')\[\033[0;34m\].\[\033[0;31m\]$(hostname -d | awk -F. '{print $2}')\[\033[0;34m\]$(hostname -d | awk -F. '{print "."$3"."$4}')\[\033[0;34m\] \W \[\033[0m\]]\$ "
+          export HISTTIMEFORMAT="%F %T "
+
+          alias rm='rm -i'
+          alias cp='cp -i'
+          alias mv='mv -i'
+
+          if [ -f /etc/bashrc ]; then
+                  . /etc/bashrc
+          fi
+
+          mdp(){
+              docker exec -it $1 bash -c "stty cols $COLUMNS rows $LINES && bash";
+          }
+          export -f mdp
+    - name: enable bashrc
+      shell: source ~/.bashrc
+
+- name: Set hostname
+  block:
+    - name: prepare script
+      block:
+        - name: prepare tmp dir
+          file:
+            path: /tmp/automata
+            state: directory
+            mode: 0755
+        - name: copy script
+          copy:
+            src: hostname_mapping.py
+            dest: /tmp/automata/hostname_mapping.py
+            mode: u+x
+        - name: install PyYAML
+          yum:
+            name: PyYAML
+            state: present
+
+    - name: get hostnames
+      shell: python /tmp/automata/hostname_mapping.py --master_node {{ groups['master_node'] | to_json | regex_replace(' ', '') }} --data_node {{ groups['data_node'] | to_json | regex_replace(' ', '') }} --client_node {{ groups['client_node'] | to_json | regex_replace(' ', '') }} --kafka_node {{ groups['kafka'] | to_json | regex_replace(' ', '') }}
+      register: hostnames
+
+    - name: handling errors when error in output
+      fail:
+        msg: "{{ hostnames.stdout }}"
+      when: "'ERROR' in hostnames.stdout"
+
+    - name: set hostnames
+      block:
+        - name: set general hostnames
+          blockinfile:
+            path: /etc/hosts
+            block: "{{ item.value }}"
+          become: true
+          when: item.key == "all"
+          with_dict: "{{ hostnames.stdout | from_yaml }}"
+
+        - name: set localhost hostname mapping
+          when: item.key != "all"
+          with_dict: "{{ hostnames.stdout | from_yaml }}"
+          delegate_to: "{{ item.key }}"
+          lineinfile:
+            path: /etc/hosts
+            regexp: '^127.0.0.1*'
+            line: "127.0.0.1  localhost  {{ item.value }}"
+          become: true
+
+        - name: setup localhost hostname
+          shell: hostnamectl set-hostname {{ item.value.split(' ')[0] }}
+          when: item.key != "all"
+          with_dict: "{{ hostnames.stdout | from_yaml }}"
+          delegate_to: "{{ item.key }}"
+
+    - name: remove script
+      file:
+        path: "/tmp/automata/hostname_mapping.py"
+        state: absent
+
+- name: Add DNS server
+  blockinfile:
+    path: /etc/resolv.conf
+    block: nameserver {{ item }}
+  with_items: "{{ dns_servers }}"
+  become: true
+
+# TODO: ADD NTP SERVER CONFIG 
+- name: Set timezone
+  timezone:
+    name: Asia/Shanghai
+  become: true
+  when: ntp_enabled|default(false)

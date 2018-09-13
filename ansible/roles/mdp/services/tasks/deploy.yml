@@ -1,0 +1,62 @@
+- include_tasks: "config.yml"
+
+- include_tasks: "setup-collect-agent.yml"
+
+- name: Get exsisted containers
+  register: existed_containers
+  command: docker ps --all --format "{{ "{{" }}.Names{{ "}}" }}"
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Remove exsisted containers
+  shell: docker rm -f {{ item }}
+  with_items: "{{ container_names }}"
+  when:
+    - inventory_hostname in groups['mdp_node'] and
+      item in existed_containers.stdout
+
+- name: Ensure docker service is running
+  systemd:
+    state: started
+    name: docker
+  become: true
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Load docker images
+  shell: docker load < {{ mdp_docker_images_dir }}
+  become: true
+  when:
+    - inventory_hostname in groups['mdp_node']
+
+- name: Ensure elasticsearch is running
+  systemd:
+    name: elasticsearch
+    state: started
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | default(true)
+
+- name: Ensure kafka is running
+  systemd:
+    name: kafka
+    state: started
+  become: true
+  when:
+    - inventory_hostname in groups['kafka']
+    - kafka_enabled | default(true)
+
+- name: Ensure zookeeper is running
+  systemd:
+    name: zookeeper-server
+  become: true
+  when:
+    - inventory_hostname in groups['zookeeper']
+    - zookeeper_enabled | default(true)
+
+- include_tasks: "mdp-162-specific.yml"
+  ignore_errors: True
+  when:
+    - version == "1.6.2"
+    - inventory_hostname in groups['mdp_node']

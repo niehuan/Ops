@@ -1,0 +1,22 @@
+- name: Gather facts
+  setup:
+
+- name: Config elasticsearch.yml
+  template:
+    src: "elasticsearch.yml.j2"
+    dest: "/etc/elasticsearch/elasticsearch.yml"
+    mode: "0655"
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool
+
+- name: Config elasticsearch jvm.options
+  template:
+    src: "jvm.options.j2"
+    dest: "/etc/elasticsearch/jvm.options"
+    mode: "0655"
+  become: true
+  when:
+    - inventory_hostname in groups['elasticsearch']
+    - elasticsearch_enabled | bool

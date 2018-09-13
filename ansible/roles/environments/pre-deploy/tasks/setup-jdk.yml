@@ -1,0 +1,17 @@
+- name: install jdk rpm package from mdp repo
+  yum:
+    name: jdk
+    state: latest
+  become: true
+
+- name: configure JAVA_HOME environment variables
+  blockinfile:
+    path: /etc/profile
+    block: |
+        export JAVA_HOME=/usr/java/jdk1.8.0_161
+        export PATH=$JAVA_HOME:/bin:$PATH
+  become: true
+
+- name: enalbe environment variables
+  shell: source /etc/profile
+  become: true

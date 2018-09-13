@@ -1,0 +1,312 @@
+---
+- name: Prepare config directory
+  file:
+    path: "{{ mdp_config_directory }}"
+    state: directory
+  when:
+    - inventory_hostname in groups["mdp_node"]
+
+- name: Configure docker compose
+  template:
+    src: "docker-compose/docker-compose.yml.j2"
+    dest: "{{ mdp_config_directory }}/docker-compose.yml"
+  when:
+    - inventory_hostname in groups["mdp_node"]
+
+- name: Configure MySQL
+  block:
+    - name: Ensure mysql config path exists
+      file:
+        path: "{{ mdp_config_directory }}/mysql"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+    - name: Copy my.cnf
+      copy:
+        src: "mysql/my.cnf"
+        dest: "{{ mdp_config_directory }}/mysql"
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+- name: Configure collect-agent
+  block:
+    - name: Create collect agent configuration dir
+      file:
+        path: "/etc/collect-agent"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating collect-agent configs
+      block:
+        - name: update collect-agent configs
+          template:
+            src: "collect-agent/bootstrap-prod.yml.j2"
+            dest: "/etc/collect-agent/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update collect-agent configs
+          template:
+            src: "collect-agent/bootstrap.yml.j2"
+            dest: "/etc/collect-agent/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "collect-agent/log4j2.xml"
+            dest: "/etc/collect-agent/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure executor
+  block:
+    - name: Create executor configuration dir
+      file:
+        path: "{{ mdp_config_directory }}/executor"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating executor configs
+      block:
+        - name: update executor configs
+          template:
+            src: "executor/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_config_directory }}/executor/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update executor configs
+          template:
+            src: "executor/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/executor/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "executor/log4j2.xml"
+            dest: "{{ mdp_config_directory }}/executor/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure galaxy
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/galaxy"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating galaxy configs
+      block:
+        - name: update galaxy configs
+          template:
+            src: "galaxy/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_config_directory }}/galaxy/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update galaxy configs
+          template:
+            src: "galaxy/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/galaxy/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "galaxy/log4j2.xml"
+            dest: "{{ mdp_config_directory }}/galaxy/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure gateway
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/gateway"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating gateway configs
+      block:
+        - name: update gateway configs
+          template:
+            src: "gateway/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_config_directory }}/gateway/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update gateway configs
+          template:
+            src: "gateway/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/gateway/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "gateway/log4j2.xml"
+            dest: "{{ mdp_config_directory }}/gateway/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure es-sql-engine
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/es-sql-engine"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating es-sql-engine configs
+      block:
+        - name: update elasticsearch configs
+          template:
+            src: "es-sql-engine/application-analyze.properties.j2"
+            dest: "{{ mdp_config_directory }}/es-sql-engine/application-analyze.properties"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update consul configs
+          template:
+            src: "es-sql-engine/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/es-sql-engine/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update apl retrive datarouce time interval
+          template:
+            src: "es-sql-engine/bootstrap.properties.j2"
+            dest: "{{ mdp_config_directory }}/es-sql-engine/bootstrap.properties"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure nginx
+  block:
+    - name: Create mdp configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/nginx"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating nginx configs
+      block:
+        - name: create nginx report directory
+          file: path={{ item }} state=directory
+          with_items:
+            - "{{ mdp_config_directory }}/nginx/conf.d"
+            - "{{ mdp_config_directory }}/nginx/html/report/"
+            - "{{ mdp_config_directory }}/../logs"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update nginx conf configs
+          template:
+            src: "nginx/conf.d/dip.conf.j2"
+            dest: "{{ mdp_config_directory }}/nginx/conf.d/dip.conf"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+
+- name: Configure nodereport
+  block:
+    - name: Create nodereport configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/nodereport"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating node-report configs
+      template:
+        src: "nodereport/nodeport.json.j2"
+        dest: "{{ mdp_config_directory }}/nodereport/nodeport.json"
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+- name: Configure rbac
+  block:
+    - name: Create rbac configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/rbac"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating rbac configs
+      block:
+        - name: update rbac configs
+          template:
+            src: "rbac/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_config_directory }}/rbac/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update rbac configs
+          template:
+            src: "rbac/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/rbac/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "rbac/log4j2.xml"
+            dest: "{{ mdp_config_directory }}/rbac/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure scheduler
+  block:
+    - name: Create scheduler configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/scheduler"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating scheduler-admin configs
+      block:
+        - name: update scheduler-admin configs
+          template:
+            src: "scheduler/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_config_directory }}/scheduler/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update scheduler-admin configs
+          template:
+            src: "scheduler/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/scheduler/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "scheduler/log4j2.xml"
+            dest: "{{ mdp_config_directory }}/scheduler/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+
+- name: Configure summer
+  block:
+    - name: Create summer configuration directory
+      file:
+        path: "{{ mdp_config_directory }}/summer"
+        state: directory
+      when:
+        - inventory_hostname in groups["mdp_node"]
+
+    - name: Updating summer configs
+      block:
+        - name: update summer configs
+          template:
+            src: "summer/bootstrap-prod.yml.j2"
+            dest: "{{ mdp_config_directory }}/summer/bootstrap-{{ spring_active }}.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: update summer configs
+          template:
+            src: "summer/bootstrap.yml.j2"
+            dest: "{{ mdp_config_directory }}/summer/bootstrap.yml"
+          when:
+            - inventory_hostname in groups["mdp_node"]
+        - name: copy log4j2 configs
+          template:
+            src: "summer/log4j2.xml"
+            dest: "{{ mdp_config_directory }}/summer/log4j2.xml"
+          when:
+            - inventory_hostname in groups["mdp_node"]

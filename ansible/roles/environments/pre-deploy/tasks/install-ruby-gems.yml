@@ -1,0 +1,87 @@
+- name: install ruby dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - jemalloc*
+    - jemalloc-devel*
+    - ruby-2.5.1
+    - gcc
+  when:
+    - ruby_enabled | bool
+
+- name: check if gem dir exists
+  register: gem_dir_exists
+  stat:
+    path: "{{ ruby_gems_dir }}"
+
+- name: ensure nginx installed
+  become: true
+  yum:
+    name: "nginx"
+    state: present
+  when:
+    - ruby_enabled|default(true) and
+      inventory_hostname in groups["gems_server"]
+
+- name: create nginx config file for gem
+  become: true
+  file:
+    path: /etc/nginx/conf.d/gem.conf
+    state: touch
+  when:
+    - ruby_enabled|default(true) and
+      inventory_hostname in groups["gems_server"]
+
+- name: configure nginx for gem
+  become: true
+  blockinfile:
+    path: /etc/nginx/conf.d/gem.conf
+    block: |
+      server {
+            listen {{ ruby_gems_server_port }};
+            server_name     {{ groups['gems_server'][0] }};
+            root    {{ ruby_gems_dir }}/;
+            autoindex    on;
+      }
+  when:
+    - ruby_enabled|default(true)
+    - inventory_hostname in groups["gems_server"]
+
+- name: reload nginx on gems_server
+  become: true
+  service:
+    name: nginx
+    state: restarted
+  when:
+    - ruby_enabled|default(true)
+    - inventory_hostname in groups["gems_server"]
+
+- name: ensure tmp gems dir exists
+  file:
+    path: "{{ ruby_gems_dir_remote }}"
+    state: directory
+  when:
+    - ruby_enabled|default(true)
+
+- name: prepare gems
+  get_url:
+    url: http://{{ groups['gems_server'][0] }}:{{ ruby_gems_server_port }}/{{ item }}
+    dest: "{{ ruby_gems_dir_remote }}/{{ item }}"
+  with_items: "{{ ruby_gems_list }}"
+  when:
+    - ruby_enabled|default(true)
+
+- name: install gems
+  with_items: "{{ ruby_gems_list }}"
+  shell: gem install --force --local {{ ruby_gems_dir_remote }}/{{ item }}
+  become: true
+  when:
+    - ruby_enabled|default(true)
+
+- name: clean gems
+  file:
+    path: "{{ ruby_gems_dir_remote }}"
+    state: absent
+  when:
+    - ruby_enabled|default(true)
